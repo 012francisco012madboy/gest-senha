@@ -1,0 +1,61 @@
+@import url(./global-query.css);
+
+.view_container{
+    width: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* ACTVIEW */
+
+.view_container .act_view{
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 200px;
+    min-height: 200px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    background-color: var(--col3);
+    border-bottom: 1px solid var(--col3);
+}
+.view_container .act_view .each_view{
+    width: 100%;
+    height: 100%;
+    font-size: 25pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center; 
+    color: var(--col1);
+}
+.view_container .act_view .each_view.right{
+    color: var(--col3);
+    background-color: var(--col1);
+}
+
+/* LISTVIEW */
+
+.view_container .list_view{
+    height: calc(100% - 240px);
+    overflow-y: auto;
+}
+.view_container .list_view .title{
+    padding: 50px 0;
+}
+
+/* FOOTER */
+
+.view_container .footer{
+    width: 100%;
+    height: 40px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--col1);
+    background-color: var(--col3);
+}

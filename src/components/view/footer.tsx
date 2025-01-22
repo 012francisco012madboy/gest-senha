@@ -1,0 +1,13 @@
+import Marquee from "react-fast-marquee";
+
+const Footer = () => {
+    return (
+        <div className="footer">
+            <Marquee>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem rem architecto nisi, tempore a aspernatur dolorum modi magnam voluptate? Quia temporibus culpa error, excepturi odio at amet itaque rerum facere.
+            </Marquee>
+        </div>
+    );
+}
+ 
+export default Footer;
