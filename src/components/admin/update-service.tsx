@@ -1,29 +1,46 @@
-import { Fragment, useContext, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { PiXCircleBold } from "react-icons/pi";
 import { Load, SubTitle } from "../other/extra";
 import { AuthContext } from "../../context/auth-context";
 import { Api } from "../../server/api";
 import { GlobalContext } from "../../context/global-context";
 import { Alert } from "../other/alert";
+import { IDefault } from "../../interface/IDefault";
 
-const CreateService = () => {
+interface updateProps{
+    service: string
+}
+
+const UpdateService = ({service} : updateProps) => {
     const { actCompany, showModal, setShowModal, textAlert, setTextAlert, typeAlert, setTypeAlert } = useContext(AuthContext)
-    const { getListService} = useContext(GlobalContext)
+    const { getListService, getEachService} = useContext(GlobalContext)
 
     const [ name, setName ] = useState("")
-    const id_company = actCompany
+
+    const [ eachService, setEachService ] = useState<IDefault>()
 
     const [ btnDisabled, setBtnDisabled ] = useState(false)
 
-    function saveService(e: React.FormEvent<HTMLFormElement>){
+    useEffect(() => {
+        getEachService(service, setEachService)
+    }, [getEachService, service, setEachService])
+
+    useEffect(() => {
+        eachService && setName(eachService?.name)
+    }, [eachService, setName])
+
+    function setData(){
+        setName("")
+    }
+
+    function updateService(e: React.FormEvent<HTMLFormElement>){
         e.preventDefault()
 
         if(name){
             setBtnDisabled(true)
 
-            Api.post("/service-add", {
-                name,
-                id_company
+            Api.put(`/service-update/${eachService?.id}`, {
+                name
             })
             .then((response) => {
                 setName("")
@@ -47,18 +64,18 @@ const CreateService = () => {
 
     return (
         <Fragment>
-            <div className={showModal == "create-service" ? "overlay-container active" : "overlay-container"}>
-                <form className="overlay-content" onSubmit={(e) => saveService(e)}>
+            <div className={showModal == "update-service" ? "overlay-container active" : "overlay-container"}>
+                <form className="overlay-content" onSubmit={(e) => updateService(e)}>
                     <div className="each-title">
-                        <SubTitle title="Adicionar serviço"/>
-                        <i onClick={() => setShowModal(null)}><PiXCircleBold/></i>
+                        <SubTitle title="Atualizar um serviço"/>
+                        <i onClick={() => {setShowModal(null), setData()}}><PiXCircleBold/></i>
                     </div>
                     <div className="each-input">
                         <label htmlFor="">Descreva o serviço</label>
                         <input
                             required
                             type="text"
-                            value={name}
+                            defaultValue={name}
                             placeholder="Ex: Depósito"
                             onChange={(e) => setName(e.target.value)}
                         />
@@ -76,4 +93,4 @@ const CreateService = () => {
     );
 }
  
-export default CreateService;
+export default UpdateService;

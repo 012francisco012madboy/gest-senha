@@ -1,44 +1,39 @@
 import { createContext } from "react"
-import { IAdmin } from "../interface/IAdmin"
-import { ICategorie } from "../interface/ICategorie"
-import { IMessage } from "../interface/IMessage"
-import { INotice, INoticeArticle } from "../interface/INotice"
+import { IDefault } from "../interface/IDefault"
+import { ICounter } from "../interface/ICounter"
+import { IUser } from "../interface/IUser"
+import { ITicket } from "../interface/ITicket"
 
 interface GlobalContextData{
-  /* ADMIN */
-  listAdmin: IAdmin[] | undefined
-  getListAdmin: () => void
-  countAdmin: string
-  getCountAdmin: () => void
+  /* USER */
+  listUser: IUser[] | undefined
+  getListUser: (data: string) => void
+  countUser: string
+  getCountUser: (data: string) => void
+  getEachUser: (data: string, setEachUser: (data: IUser) => void) => void
   
-  /* CATEGORIE */
-  listCategorie: ICategorie[] | undefined
-  getListCategorie: () => void
-  listState: ICategorie[] | undefined
-  getListState: () => void
-  countCategorie: string
-  getCountCategorie: () => void
-  getEachCategorie: (data: string, setEachCategorie: (data: ICategorie) => void) => void
+  /* SERVIÇOS */
+  listService: IDefault[] | undefined
+  getListService: (data: string) => void
+  countService: string
+  getCountService: (data: string) => void
+  getEachService: (data: string, setEachService: (data: IDefault) => void) => void
   
-  /* NOTICE */
-  getListNotice: (setListNotice: (data: INotice[]) => void) => void
-  getEachNotice: (data: string, setEachNotice: (data: INotice) => void) => void
-  getCategorieNotice: (data: string, setListNotice: (data: INotice[]) => void) => void
-  getRelatedNotice: (data: string, setListNotice: (data: INotice[]) => void) => void
-  getSearchNotice: (data: string, setListNotice: (data: INotice[]) => void) => void
-  getBannerNotice: (setBannerNotice: (data: INotice[]) => void) => void
-  destaqueNotice: INotice[] | undefined
-  getDestaqueNotice: () => void
-  articleNotice: INoticeArticle[] | undefined
-  getArticleNotice: () => void
-  countNotice: string
-  getCountNotice: () => void
+  /* BALCÃO */
+  listCounter: ICounter[] | undefined
+  getListCounter: (data: string) => void
+  getListCounterActive: (data: string) => void
+  countCounter: string
+  getCountCounter: (data: string) => void
+  getEachCounter: (data: string, setEachCounter: (data: ICounter) => void) => void
   
-  /* MESSAGE */
-  listMessage: IMessage[] | undefined
-  getListMessage: () => void
-  countMessage: string
-  getCountMessage: () => void
+  /* TICKET */
+  actTicket: ITicket | null
+  setActTicket: (data: ITicket | null) => void
+  getListTicket: (service: string, company: string, setListTicket: (data: ITicket[]) => void) => void
+  getListAllTicket: (company: string, setListTicket: (data: ITicket[]) => void) => void
+  getListLastTicket: (company: string, setTicket: (data: ITicket) => void) => void
+  getNextTicket: (service: string, assistant: string) => void
 }
 
 export const GlobalContext = createContext({} as GlobalContextData)

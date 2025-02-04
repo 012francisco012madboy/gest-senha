@@ -4,6 +4,7 @@ form{
      flex-direction: column;
 }
 form .each-title{
+     padding: 25px 0;
      display: flex;
      align-items: center;
      justify-content: space-between;
@@ -17,6 +18,11 @@ form .each-input{
      gap: 5px;
      display: flex;
      flex-direction: column;
+}
+form .each-input label{
+     gap: 5px;
+     display: flex;
+     align-items: center;
 }
 form .each-input input,
 form .each-input select,
@@ -36,6 +42,15 @@ form .each-input textarea{
 form .each-input textarea{
      height: 120px;
      resize: none;
+}
+form .each-button{
+     gap: 5px;
+     display: flex;
+     align-items: center;
+     justify-content: right;
+}
+form .each-button a{
+     color: var(--col1);
 }
 form .each-button button{
      cursor: pointer;

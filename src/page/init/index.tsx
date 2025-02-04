@@ -19,7 +19,7 @@ const Init = () => {
                         <p><i><RiFileList2Line /> </i>Cliente</p>
                     </div>
                 </Link>
-                <Link to={"/login"}>
+                <Link to={"/sign-in"}>
                     <div className="each_choice">
                         <p><i><FiUser /> </i>Funcionário</p>
                     </div>

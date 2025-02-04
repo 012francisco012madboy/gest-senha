@@ -25,7 +25,10 @@ body::-webkit-scrollbar{
     --col1: #fff;
     --col2: #464646;
     --col3: rgb(50, 70, 100);   
-    --col4: rgb(80, 100, 130);   
+    --col4: rgb(80, 100, 130);  
+    --col5: #c72a3d ;
+    --col6: #5dc679; 
+    --col7: #dfc95a; 
 }
 i{
     display: flex;

@@ -44,4 +44,5 @@
 }
 .table-container .table-content table tbody td .btn i{
      font-size: 15pt;
+     cursor: pointer;
 }

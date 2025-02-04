@@ -53,24 +53,24 @@
 }
 .client_container .main form{
     display: flex;
-    align-items: center;
-    justify-content: end;
+    align-items: end;
 }
 .client_container .main form button{
+    width: 100%;
+    max-width: 200px;
     height: 40px;
     padding: 0 10px;
-    font-size: 12pt;
+    pointer-events: none;
+    outline: none;
+    background: none;
+    color: var(--col3);
     font-family: "Open Sans";
     border-radius: 5px;
-    color: var(--col3);
-    border: 3px solid var(--col3);
-    background-color: var(--col1);
-    pointer-events: none;
-    cursor: pointer;
+    border: 1px solid var(--col3);
 }
 .client_container .main form button.active{
     color: var(--col1);
     pointer-events: visible;
-    border: 3px solid var(--col4);
+    cursor: pointer;
     background-color: var(--col4);
 }

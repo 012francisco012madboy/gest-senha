@@ -6,29 +6,29 @@ import { Api } from "../../server/api";
 import { GlobalContext } from "../../context/global-context";
 import { Alert } from "../other/alert";
 
-const CreateService = () => {
+const CreateCounter = () => {
     const { actCompany, showModal, setShowModal, textAlert, setTextAlert, typeAlert, setTypeAlert } = useContext(AuthContext)
-    const { getListService} = useContext(GlobalContext)
+    const { getListCounter} = useContext(GlobalContext)
 
-    const [ name, setName ] = useState("")
+    const [ ref, setRef ] = useState("")
     const id_company = actCompany
 
     const [ btnDisabled, setBtnDisabled ] = useState(false)
 
-    function saveService(e: React.FormEvent<HTMLFormElement>){
+    function saveCounter(e: React.FormEvent<HTMLFormElement>){
         e.preventDefault()
 
-        if(name){
+        if(ref){
             setBtnDisabled(true)
 
-            Api.post("/service-add", {
-                name,
+            Api.post("/counter-add", {
+                ref,
                 id_company
             })
             .then((response) => {
-                setName("")
+                setRef("")
                 setShowModal(null)
-                actCompany && getListService(actCompany)
+                actCompany && getListCounter(actCompany)
                 setBtnDisabled(false)
                 setTextAlert(response?.data.message)
                 setTypeAlert(true)
@@ -47,20 +47,21 @@ const CreateService = () => {
 
     return (
         <Fragment>
-            <div className={showModal == "create-service" ? "overlay-container active" : "overlay-container"}>
-                <form className="overlay-content" onSubmit={(e) => saveService(e)}>
+            <div className={showModal == "create-counter" ? "overlay-container active" : "overlay-container"}>
+                <form className="overlay-content" onSubmit={(e) => saveCounter(e)}>
                     <div className="each-title">
-                        <SubTitle title="Adicionar serviço"/>
+                        <SubTitle title="Adicionar balcão"/>
                         <i onClick={() => setShowModal(null)}><PiXCircleBold/></i>
                     </div>
                     <div className="each-input">
-                        <label htmlFor="">Descreva o serviço</label>
+                        <label htmlFor="">Referência do balcão (A-Z)</label>
                         <input
                             required
                             type="text"
-                            value={name}
-                            placeholder="Ex: Depósito"
-                            onChange={(e) => setName(e.target.value)}
+                            value={ref}
+                            maxLength={3}
+                            placeholder="Ex: A"
+                            onChange={(e) => setRef(e.target.value)}
                         />
                     </div>
                     <div className="each-button">
@@ -76,4 +77,4 @@ const CreateService = () => {
     );
 }
  
-export default CreateService;
+export default CreateCounter;

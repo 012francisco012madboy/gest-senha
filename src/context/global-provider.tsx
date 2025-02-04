@@ -1,9 +1,9 @@
 import { ReactNode } from "react"
 import { GlobalContext } from "./global-context"
-import AdminProvider from "../provider/admin-provider"
-import CategorieProvider from "../provider/categorie-provider"
-import MessageProvider from "../provider/message-provider"
-import NoticeProvider from "../provider/notice-provider"
+import ServiceProvider from "../provider/service-provider"
+import CounterProvider from "../provider/counter-provider"
+import UserProvider from "../provider/user-provider"
+import TicketProvider from "../provider/ticket-provider"
 
 interface ContextProps{
   children: ReactNode
@@ -11,38 +11,35 @@ interface ContextProps{
 
 function GlobalProvider({children}: ContextProps){
   /* PROVIDER */
-  const { listAdmin, getListAdmin, countAdmin, getCountAdmin} = AdminProvider()
-  const { listCategorie, getListCategorie, countCategorie, getCountCategorie, listState, getListState, getEachCategorie } = CategorieProvider()
-  const { getListNotice, countNotice, getCountNotice, getEachNotice, getCategorieNotice, getRelatedNotice, getSearchNotice, destaqueNotice, getDestaqueNotice, articleNotice, getArticleNotice, getBannerNotice } = NoticeProvider()
-  const { listMessage, getListMessage, countMessage, getCountMessage } = MessageProvider()
+  const { listUser, getListUser, countUser, getCountUser, getEachUser } = UserProvider()
+  const { listService, getListService, countService, getCountService, getEachService } = ServiceProvider()
+  const { listCounter, getListCounter, getListCounterActive, countCounter, getCountCounter, getEachCounter } = CounterProvider()
+  const { actTicket, setActTicket, getListTicket, getListAllTicket, getListLastTicket, getNextTicket } = TicketProvider()
 
   return(
     <GlobalContext.Provider value={{
-      /* ADMIN */
-      listAdmin, getListAdmin,
-      countAdmin, getCountAdmin,
+      /* USER */
+      listUser, getListUser,
+      countUser, getCountUser,
+      getEachUser,
 
-      /* CATEGORIE */
-      listCategorie, getListCategorie,
-      countCategorie, getCountCategorie,
-      listState, getListState,
-      getEachCategorie,
+      /* SERVIÇOS */
+      listService, getListService,
+      countService, getCountService,
+      getEachService,
 
-      /* NOTICE */
-      getListNotice,
-      countNotice, getCountNotice,
-      getEachNotice,
-      getCategorieNotice,
-      getRelatedNotice,
-      destaqueNotice, getDestaqueNotice,
-      articleNotice, getArticleNotice,
-      getSearchNotice,
-      getBannerNotice,
+      /* BALCÃO */
+      listCounter, getListCounter,
+      countCounter, getCountCounter,
+      getEachCounter, getListCounterActive,
 
-      /* MESSAGE */
-      listMessage, getListMessage,
-      countMessage, getCountMessage
-
+      /* TICKET */
+      actTicket,
+      setActTicket,
+      getListTicket,
+      getListAllTicket,
+      getListLastTicket,
+      getNextTicket
     }}>
       {children}
     </GlobalContext.Provider>

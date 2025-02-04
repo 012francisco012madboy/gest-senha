@@ -1,97 +1,130 @@
 import { useCallback, useEffect, useState } from "react"
 import { Api } from "../server/api"
-import { IAdmin } from "../interface/IAdmin"
+import { IUser } from "../interface/IUser"
 import ExtraProvider from "./extra-provider"
+import { useNavigate } from "react-router-dom"
+import { IUserAssistant } from "../interface/IUserAssistant"
 
 const SessionProvider = () => {
     const { setTextAlert, setTypeAlert } = ExtraProvider()
     
-    const [ admin, setAdmin] = useState<IAdmin>()
+    const [ user, setUser] = useState<IUser>()
 
-    const [ actAdmin, setActAdmin] = useState<string | null>()
+    const [ actUser, setActUser] = useState<string | null>()
+    const [ actUserAssistant, setActUserAssistant] = useState<IUserAssistant>()
+    const [ actCompany, setActCompany] = useState<string | null>()
 
     const [ logado, setLogado] = useState<boolean>(false)
 
-    /* ADMIN DATA */
-    const getAdmin = useCallback(async () => {
-        setActAdmin(localStorage.getItem("actAdmin"))
+    const navigate = useNavigate()
 
-        await Api.get(`admin-show/${actAdmin}`)
+    /* USER DATA */
+    const getUser = useCallback(async () => {
+        await Api.get(`user-show/${actUser}`)
             .then((response) => {
-                setAdmin(response?.data)
-                console.log(response?.data)
+                setUser(response?.data)
+                setLogado(true)
             })
-            .catch(erro => {
-                console.log(erro)
+    }, [])
+
+    /* USER ASSISTANT DATA */
+    const getUserAssistant = useCallback(async () => {
+
+        if(localStorage.getItem("actAssitant") && localStorage.getItem("actCounter")){
+            await Api.get(`user-assistant-view/${localStorage.getItem("actAssitant")}/${localStorage.getItem("actCounter")}`)
+            .then((response) => {
+                setActUserAssistant(response?.data)
             })
-    }, [actAdmin])
+            .catch((err) => {
+                console.log(err)
+            })
+        }
+        else{
+            navigate("/counter")
+        }
+
+    }, [])
 
     /* SESSION LOAD */
     useEffect(() => {
-        setActAdmin(localStorage.getItem("actAdmin"))
+        if(!actUser){
+            setActUser(localStorage.getItem("actUser"))
+        }
 
-        if (actAdmin) {
-            loadAdmin()
+        if (actUser) {
+            loadUser()
         }
         else {
             setLogado(false)
         }
 
-        async function loadAdmin() {
-            await Api.get(`admin-show/${actAdmin}`)
-                .then(response => {
-                    setAdmin(response?.data)
-                    setLogado(true)
-                })
-                .catch(err => {
-                    console.log(err)
-                    setLogado(false)
-                })
+        async function loadUser() {
+            await Api.get(`user-show/${actUser}`)
+            .then(response => {
+                setUser(response?.data)
+                setLogado(true)
+                
+                setActCompany(response?.data.id_company)
+            })
+            .catch(() => {
+                setLogado(false)
+            })
         }
-    }, [actAdmin])
+    }, [actUser])
 
     /* SESSION LOGIN */
     const login = useCallback(async (email: string, password: string, setBtnDisabled: (data: boolean) => void) => {
         setBtnDisabled(true)
         
-        await Api.post("admin-signin", {
+        await Api.post("user-signin", {
             email,
             password
         })
         .then((response) => {
-            localStorage.setItem("actAdmin", response?.data.admin?.id)
+            localStorage.setItem("actUser", response?.data.user?.id)
+
+            setActUser(response?.data.user?.id)
 
             setTextAlert(response?.data.message)
             setTypeAlert(true)
-            getAdmin()
+
+            getUser()
 
             setBtnDisabled(false)
+
+            return response?.data.user?.id_type == "1" ? navigate("/admin") :
+            response?.data.user?.id_type == "2" ? navigate("/counter") : ""
         })
         .catch((erro) => {
             setTextAlert(erro?.response.data.message)
             setTypeAlert(false)
             setBtnDisabled(false)
         })
-    }, [getAdmin, setTextAlert, setTypeAlert])
+    }, [getUser, setTextAlert, setTypeAlert, navigate])
 
     /* SESSION LOGOUT */
     const logout = () => {
-
-        setAdmin(undefined)
+        setUser(undefined)
 
         setLogado(false)
 
-        localStorage.removeItem("actAdmin")
+        localStorage.removeItem("actUser")
+        
+        localStorage.removeItem("actAssitant")
+        localStorage.removeItem("actCounter")
     }
 
     return {
         logado,
         login,
         logout,
-        admin,
-        setAdmin,
-        actAdmin,
-        getAdmin
+        user,
+        setUser,
+        actUser,
+        getUser,
+        actCompany,
+        getUserAssistant,
+        actUserAssistant
     }
 }
 

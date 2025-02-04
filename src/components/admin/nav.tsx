@@ -1,6 +1,9 @@
+import { useContext } from "react";
 import { PiUserCircle } from "react-icons/pi";
+import { AuthContext } from "../../context/auth-context";
 
 const Nav = () => {
+    const { user } = useContext(AuthContext)
     return (
         <div className="nav">
             <div className="nav_logo">
@@ -12,7 +15,7 @@ const Nav = () => {
                         <i><PiUserCircle/></i>
                     </div>
                     <div className="text">
-                        <p>Ariel Francisco</p>
+                        <p>{user?.name}</p>
                     </div>
                 </div>
             </div>
