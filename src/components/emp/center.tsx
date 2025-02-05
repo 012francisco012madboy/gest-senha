@@ -63,13 +63,13 @@ const Center = () => {
                     </div>
                     <div
                         className="each_menu"
-                        onClick={() => handleFinished("5")}
+                        onClick={() => handleFinished("6")}
                     >
                         <p><i><MdCheck/></i> Finalizar</p>
                     </div>
                     <div
                         className="each_menu"
-                        onClick={() => handleFinished("6")}
+                        onClick={() => handleFinished("5")}
                     >
                         <p><i><MdClose/></i> Não compareceu</p>
                     </div>

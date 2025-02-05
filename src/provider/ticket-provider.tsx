@@ -4,6 +4,7 @@ import { ITicket } from "../interface/ITicket"
 
 const TicketProvider = () => {
     const [ actTicket, setActTicket ] = useState<ITicket | undefined>()
+    const [ countTicket, setCountTicket ] = useState("")
 
     const [ listTicket, setListTicket ] = useState<ITicket[]>()
     const [ listAllTicket, setListAllTicket ] = useState<ITicket[]>()
@@ -38,10 +39,10 @@ const TicketProvider = () => {
         })
     }, [])
 
-    const getNextTicket = useCallback( async(service: string, assistant: string) => {
-        await Api.get(`ticket-call-next/${service}/${assistant}`)
+    const getCountTicket = useCallback( async(actCompany: string) => {
+        await Api.get(`ticket-count/${actCompany}`)
         .then((response) =>{
-            setActTicket(response?.data)
+            setCountTicket(response?.data)
         })
         .catch(erro =>{
             console.log(erro)
@@ -50,13 +51,14 @@ const TicketProvider = () => {
 
     return {
         actTicket,
+        countTicket,
         listTicket,
         listAllTicket,
         setActTicket,
         getListTicket,
+        getCountTicket,
         getListAllTicket,
-        getListLastTicket,
-        getNextTicket
+        getListLastTicket
     }
 }
  

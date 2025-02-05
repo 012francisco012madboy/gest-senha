@@ -14,7 +14,7 @@ function GlobalProvider({children}: ContextProps){
   const { listUser, getListUser, countUser, getCountUser, getEachUser } = UserProvider()
   const { listService, getListService, countService, getCountService, getEachService } = ServiceProvider()
   const { listCounter, getListCounter, getListCounterActive, countCounter, getCountCounter, getEachCounter } = CounterProvider()
-  const { actTicket, listTicket, listAllTicket, setActTicket, getListTicket, getListAllTicket, getListLastTicket, getNextTicket } = TicketProvider()
+  const { actTicket, countTicket, getCountTicket, listTicket, listAllTicket, setActTicket, getListTicket, getListAllTicket, getListLastTicket } = TicketProvider()
 
   return(
     <GlobalContext.Provider value={{
@@ -35,13 +35,14 @@ function GlobalProvider({children}: ContextProps){
 
       /* TICKET */
       actTicket,
+      countTicket,
       listTicket,
       listAllTicket,
       setActTicket,
+      getCountTicket,
       getListTicket,
       getListAllTicket,
-      getListLastTicket,
-      getNextTicket
+      getListLastTicket
     }}>
       {children}
     </GlobalContext.Provider>

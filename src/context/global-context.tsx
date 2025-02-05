@@ -28,14 +28,15 @@ interface GlobalContextData{
   getEachCounter: (data: string, setEachCounter: (data: ICounter) => void) => void
   
   /* TICKET */
+  countTicket: string
   actTicket: ITicket | undefined
   listTicket: ITicket[] | undefined
   listAllTicket: ITicket[] | undefined
   setActTicket: (data: ITicket | undefined) => void
+  getCountTicket: (data: string) => void
   getListTicket: (service: string, company: string) => void
   getListAllTicket: (company: string) => void
   getListLastTicket: (company: string, setTicket: (data: ITicket) => void) => void
-  getNextTicket: (service: string, assistant: string) => void
 }
 
 export const GlobalContext = createContext({} as GlobalContextData)

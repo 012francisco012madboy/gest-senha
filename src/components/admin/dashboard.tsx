@@ -4,15 +4,16 @@ import { AuthContext } from "../../context/auth-context";
 
 const DashBoard = () => {
     const { actCompany} = useContext(AuthContext)
-    const { getCountUser, getCountService, getCountCounter, countUser, countService, countCounter} = useContext(GlobalContext)
+    const { getCountUser, getCountTicket, getCountService, getCountCounter, countUser, countService, countCounter, countTicket} = useContext(GlobalContext)
 
     useEffect(() => {
         if(actCompany){
             getCountUser(actCompany)
             getCountService(actCompany)
             getCountCounter(actCompany)
+            getCountTicket(actCompany)
         }
-    })
+    }, [])
     return (
         <div className="dashboard-container">
             <div className="dashboard-content">
@@ -29,11 +30,7 @@ const DashBoard = () => {
                     <p>Balcões</p>
                 </div>
                 <div className="each-dashboard">
-                    <strong>{0}</strong>
-                    <p>Sessões</p>
-                </div>
-                <div className="each-dashboard">
-                    <strong>{0}</strong>
+                    <strong>{countTicket}</strong>
                     <p>Senhas</p>
                 </div>
             </div>
