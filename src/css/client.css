@@ -74,3 +74,9 @@
     cursor: pointer;
     background-color: var(--col4);
 }
+.client_container .main .result strong{
+    visibility: hidden;
+}
+.client_container .main .result strong.active{
+    visibility: visible;
+}

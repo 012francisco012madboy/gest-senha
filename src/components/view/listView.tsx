@@ -1,18 +1,15 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { Title } from "../other/extra";
 import { AuthContext } from "../../context/auth-context";
 import { GlobalContext } from "../../context/global-context";
-import { ITicket } from "../../interface/ITicket";
 
 const ListView = () => {
-    const {actCompany} = useContext(AuthContext)
-    const {getListAllTicket} = useContext(GlobalContext)
-
-    const [ listTicket, setListTicket ] = useState<ITicket[]>()
+    const { actCompany } = useContext(AuthContext)
+    const { getListAllTicket, listAllTicket } = useContext(GlobalContext)
 
     useEffect(() => {
-        actCompany && getListAllTicket(actCompany, setListTicket)
-    }, [actCompany, getListAllTicket, setListTicket])
+        actCompany && getListAllTicket(actCompany)
+    }, [actCompany, getListAllTicket])
 
     return (
         <div className="list_view">
@@ -29,7 +26,7 @@ const ListView = () => {
                         </thead>
                         <tbody>
                             {
-                                listTicket?.map((each, i) => (
+                                listAllTicket?.map((each, i) => (
                                     <tr key={i}>
                                         <td>{each.ref}</td>
                                         <td>{each.service}</td>

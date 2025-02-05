@@ -1,17 +1,14 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../../context/auth-context";
 import { GlobalContext } from "../../context/global-context";
-import { ITicket } from "../../interface/ITicket";
 
 const Sidebar = () => {
     const { actCompany, actUserAssistant } = useContext(AuthContext)
-    const { getListTicket } = useContext(GlobalContext)
-
-    const [ listTicket, setListTicket ] = useState<ITicket[]>()
+    const { getListTicket, listTicket } = useContext(GlobalContext)
 
     useEffect(() => {
-        actCompany && actUserAssistant && getListTicket(actUserAssistant?.id_service, actCompany, setListTicket)
-    }, [actCompany, getListTicket, actUserAssistant, setListTicket])
+        actCompany && actUserAssistant && getListTicket(actUserAssistant?.id_service, actCompany)
+    }, [actCompany, getListTicket, actUserAssistant])
 
     return (
         <div className="table-container">

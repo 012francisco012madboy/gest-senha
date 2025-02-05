@@ -10,8 +10,8 @@ import { GlobalContext } from "../../context/global-context";
 import { Api } from "../../server/api";
 
 const Center = () => {
-    const { setTextAlert, setTypeAlert, actUserAssistant, voice } = useContext(AuthContext)
-    const { actTicket, setActTicket } = useContext(GlobalContext)
+    const { actCompany, setTextAlert, setTypeAlert, actUserAssistant, voice } = useContext(AuthContext)
+    const { actTicket, setActTicket, getListTicket } = useContext(GlobalContext)
 
     function handleFinished(state: string){
         if(actTicket && state){
@@ -22,7 +22,9 @@ const Center = () => {
                 setTextAlert(response?.data.message)
                 setTypeAlert(true)
 
-                setActTicket(null)
+                setActTicket(undefined)
+
+                actUserAssistant && actCompany && getListTicket(actUserAssistant?.id_service, actCompany)
             })
             .catch((err) => {
                 setTextAlert(err?.response?.data.message)

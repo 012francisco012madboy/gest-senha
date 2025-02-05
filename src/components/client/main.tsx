@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Load, Title } from "../other/extra";
 import { GlobalContext } from "../../context/global-context";
 import { AuthContext } from "../../context/auth-context";
-import { PiCheckCircle } from "react-icons/pi";
+// import { PiCheckCircle } from "react-icons/pi";
 import { Api } from "../../server/api";
 
 const Main = () => {
@@ -10,12 +10,22 @@ const Main = () => {
     const { getListCounterActive, listCounter } = useContext(GlobalContext)
 
     const [ service, setService ] = useState("")
+    
+    const [ ticket, setTicket ] = useState("")
 
     const [ btnDisabled, setBtnDisabled ] = useState(false)
 
     useEffect(() => {
         actCompany && getListCounterActive(actCompany)
     }, [actCompany, getListCounterActive])
+
+    function cleanTicket(){
+        const timer = setTimeout(() => {
+            setTicket("")
+        }, 2000)
+
+        return () => clearTimeout(timer);
+    }
 
     function handleTicket(e: React.FormEvent<HTMLFormElement>){
         e.preventDefault()
@@ -30,6 +40,9 @@ const Main = () => {
             .then((response) => {
                 setTextAlert(response?.data.message)
                 setTypeAlert(true)
+                
+                setTicket(response?.data.ref)
+                cleanTicket()
 
                 setBtnDisabled(false)
 
@@ -58,7 +71,8 @@ const Main = () => {
                             onClick={() => setService(each.id_service)}
                         >
                             <p>{each.service}</p>
-                            <i>{service == each.id_service ? <PiCheckCircle/> : ""}</i>
+                            <strong>{each.ref}</strong>
+                            {/* <i>{service == each.id_service ? <PiCheckCircle/> : ""}</i> */}
                         </div>
                     ))
                 }
@@ -72,6 +86,9 @@ const Main = () => {
                     {btnDisabled ? <Load/> : "Confirmar"}
                 </button>
             </form>
+            <div className="result">
+                <strong className={ticket ? "active" : ""}>A tua senha é: {ticket}</strong>
+            </div>
         </div>
     );
 }

@@ -44,6 +44,7 @@ const UpdateCounter = ({counter} : counterProps) => {
                 setBtnDisabled(false)
                 setTextAlert(response?.data.message)
                 setTypeAlert(true)
+                setEachCounter(undefined)
             })
             .catch((erro) => {
                 setBtnDisabled(false)

@@ -3,9 +3,12 @@ import { Api } from "../server/api"
 import { ITicket } from "../interface/ITicket"
 
 const TicketProvider = () => {
-    const [ actTicket, setActTicket ] = useState<ITicket | null>()
+    const [ actTicket, setActTicket ] = useState<ITicket | undefined>()
 
-    const getListTicket = useCallback( async(service: string, actCompany: string, setListTicket: (data: ITicket[]) => void) => {
+    const [ listTicket, setListTicket ] = useState<ITicket[]>()
+    const [ listAllTicket, setListAllTicket ] = useState<ITicket[]>()
+
+    const getListTicket = useCallback( async(service: string, actCompany: string) => {
         await Api.get(`ticket-view/${service}/${actCompany}`)
         .then((response) =>{
             setListTicket(response?.data)
@@ -15,10 +18,10 @@ const TicketProvider = () => {
         })
     }, [])
 
-    const getListAllTicket = useCallback( async(actCompany: string, setListTicket: (data: ITicket[]) => void) => {
+    const getListAllTicket = useCallback( async(actCompany: string) => {
         await Api.get(`ticket-view-all/${actCompany}`)
         .then((response) =>{
-            setListTicket(response?.data)
+            setListAllTicket(response?.data)
         })
         .catch(erro =>{
             console.log(erro)
@@ -47,6 +50,8 @@ const TicketProvider = () => {
 
     return {
         actTicket,
+        listTicket,
+        listAllTicket,
         setActTicket,
         getListTicket,
         getListAllTicket,

@@ -28,10 +28,12 @@ interface GlobalContextData{
   getEachCounter: (data: string, setEachCounter: (data: ICounter) => void) => void
   
   /* TICKET */
-  actTicket: ITicket | null
-  setActTicket: (data: ITicket | null) => void
-  getListTicket: (service: string, company: string, setListTicket: (data: ITicket[]) => void) => void
-  getListAllTicket: (company: string, setListTicket: (data: ITicket[]) => void) => void
+  actTicket: ITicket | undefined
+  listTicket: ITicket[] | undefined
+  listAllTicket: ITicket[] | undefined
+  setActTicket: (data: ITicket | undefined) => void
+  getListTicket: (service: string, company: string) => void
+  getListAllTicket: (company: string) => void
   getListLastTicket: (company: string, setTicket: (data: ITicket) => void) => void
   getNextTicket: (service: string, assistant: string) => void
 }
