@@ -6,6 +6,10 @@
     padding: 0;
     box-sizing: border-box;
 }
+@font-face {
+    font-family: Pop;
+    src: url(../font/Poppins-Regular.ttf);
+}
 a{
     text-decoration: none;
 }
@@ -13,7 +17,7 @@ body{
     max-width: 1600px;
     margin: 0 auto;
     font-size: 12pt;
-    font-family: "Open Sans";
+    font-family: Pop;
     overflow: auto;
     scrollbar-width: none;
     color: var(--col3);

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Title } from "../other/extra";
 import { AuthContext } from "../../context/auth-context";
 import { GlobalContext } from "../../context/global-context";
@@ -7,8 +7,15 @@ const ListView = () => {
     const { actCompany } = useContext(AuthContext)
     const { getListAllTicket, listAllTicket } = useContext(GlobalContext)
 
+    const [ acc, setAcc ] = useState<boolean>(false)
+    
     useEffect(() => {
-        actCompany && getListAllTicket(actCompany)
+        setInterval(() => {
+            if (acc) return;
+            setAcc(true)
+            actCompany && getListAllTicket(actCompany)
+            setAcc(false)
+        }, 5000)
     }, [actCompany, getListAllTicket])
 
     return (

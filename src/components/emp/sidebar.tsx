@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/auth-context";
 import { GlobalContext } from "../../context/global-context";
 
@@ -6,8 +6,15 @@ const Sidebar = () => {
     const { actCompany, actUserAssistant } = useContext(AuthContext)
     const { getListTicket, listTicket } = useContext(GlobalContext)
 
+    const [ acc, setAcc ] = useState<boolean>()
+
     useEffect(() => {
-        actCompany && actUserAssistant && getListTicket(actUserAssistant?.id_service, actCompany)
+        setInterval(() => {
+            if (acc) return;
+            setAcc(true)
+            actCompany && actUserAssistant && getListTicket(actUserAssistant?.id_service, actCompany)
+            setAcc(false)
+        }, 5000)
     }, [actCompany, getListTicket, actUserAssistant])
 
     return (
