@@ -17,7 +17,6 @@ import SignUpEmp from "../page/init/sign-up-emp";
 import { Fragment, ReactNode, useContext } from "react";
 import { AuthContext } from "../context/auth-context";
 import { Alert } from "../components/other/alert";
-import App from "../components/other/aaa";
 
 interface itemProps{
     children: ReactNode
@@ -61,7 +60,6 @@ const Rotas = () => {
             <Route path='/' element={<Init/>}/>
             <Route path='/view' element={<View/>}/>
             <Route path='/client' element={<Client/>}/>
-            <Route path='/aaa' element={<App/>}/>
             
             <Route path="" element={<PrivateRoute children={<Render/>} permited={["1", "2"]}/>}>
                 <Route path='/counter' element={<Counter/>}/>
