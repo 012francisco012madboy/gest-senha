@@ -13,8 +13,6 @@ const Sidebar = () => {
     }, [actCompany, getListTicket, actUserAssistant])
 
     useEffect(() => {
-        actCompany && actUserAssistant && getListTicket(actUserAssistant?.id_service, actCompany)
-
         setInterval(() => {
             if (acc) return;
             setAcc(true)

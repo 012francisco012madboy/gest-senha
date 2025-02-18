@@ -4,14 +4,18 @@ import { MdCheck } from "react-icons/md";
 import { MdClose } from "react-icons/md";
 import { Title } from "../other/extra";
 import Sidebar from "./sidebar";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../../context/auth-context";
 import { GlobalContext } from "../../context/global-context";
 import { Api } from "../../server/api";
 
 const Center = () => {
     const { actCompany, setTextAlert, setTypeAlert, actUserAssistant, voice } = useContext(AuthContext)
-    const { actTicket, setActTicket, getListTicket } = useContext(GlobalContext)
+    const { actTicket, setActTicket, getActTicket, getListTicket } = useContext(GlobalContext)
+
+    useEffect(() => {
+        actUserAssistant && getActTicket(actUserAssistant?.id_assistant)
+    }, [actUserAssistant, getActTicket])
 
     function handleFinished(state: string){
         if(actTicket && state){

@@ -33,6 +33,7 @@ interface GlobalContextData{
   listTicket: ITicket[] | undefined
   listAllTicket: ITicket[] | undefined
   setActTicket: (data: ITicket | undefined) => void
+  getActTicket: (data: string) => void
   getCountTicket: (data: string) => void
   getListTicket: (service: string, company: string) => void
   getListAllTicket: (company: string) => void

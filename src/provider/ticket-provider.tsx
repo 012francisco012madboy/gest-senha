@@ -39,6 +39,16 @@ const TicketProvider = () => {
         })
     }, [])
 
+    const getActTicket = useCallback( async(assistant: string) => {
+        await Api.get(`ticket-call-current/${assistant}`)
+        .then((response) =>{
+            setActTicket(response?.data)
+        })
+        .catch(erro =>{
+            console.log(erro)
+        })
+    }, [])
+
     const getCountTicket = useCallback( async(actCompany: string) => {
         await Api.get(`ticket-count/${actCompany}`)
         .then((response) =>{
@@ -55,6 +65,7 @@ const TicketProvider = () => {
         listTicket,
         listAllTicket,
         setActTicket,
+        getActTicket,
         getListTicket,
         getCountTicket,
         getListAllTicket,

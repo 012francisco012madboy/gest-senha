@@ -13,7 +13,7 @@ const ExtraProvider = () => {
 
     function voice(ticket: string, counter: string){
         if("speechSynthesis" in window){
-            const text = `A seguir, Balcão ${counter}. Senha ${ticket}.`
+            const text = `A seguir, Senha ${ticket}. Balcão ${counter}.`
 
             const value = new SpeechSynthesisUtterance(text)
 
