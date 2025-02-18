@@ -9,12 +9,18 @@ const Sidebar = () => {
     const [ acc, setAcc ] = useState<boolean>()
 
     useEffect(() => {
+        actCompany && actUserAssistant && getListTicket(actUserAssistant?.id_service, actCompany)
+    }, [actCompany, getListTicket, actUserAssistant])
+
+    useEffect(() => {
+        actCompany && actUserAssistant && getListTicket(actUserAssistant?.id_service, actCompany)
+
         setInterval(() => {
             if (acc) return;
             setAcc(true)
             actCompany && actUserAssistant && getListTicket(actUserAssistant?.id_service, actCompany)
             setAcc(false)
-        }, 5000)
+        }, 10000)
     }, [actCompany, getListTicket, actUserAssistant])
 
     return (
@@ -29,6 +35,7 @@ const Sidebar = () => {
                     </thead>
                     <tbody>
                         {
+                            listTicket &&
                             listTicket?.map((each, i) => (
                                 <tr key={i}>
                                     <td>{each.ref}</td>

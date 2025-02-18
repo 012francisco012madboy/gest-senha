@@ -9,8 +9,19 @@ const ActView = () => {
 
     const [ ticket, setTicket ] = useState<ITicket>()
 
+    const [ acc, setAcc ] = useState<boolean>()
+
     useEffect(() => {
         actCompany && getListLastTicket(actCompany, setTicket)
+    }, [actCompany, getListLastTicket, setTicket])
+
+    useEffect(() => {
+        setInterval(() => {
+            if (acc) return;
+            setAcc(true)
+            actCompany && getListLastTicket(actCompany, setTicket)
+            setAcc(false)
+        }, 10000)
     }, [actCompany, getListLastTicket, setTicket])
 
     return (

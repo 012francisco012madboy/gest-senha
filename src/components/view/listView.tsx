@@ -10,14 +10,18 @@ const ListView = () => {
     const [ acc, setAcc ] = useState<boolean>(false)
     
     useEffect(() => {
+        actCompany && getListAllTicket(actCompany)
+    }, [actCompany, getListAllTicket])
+    
+    useEffect(() => {
         setInterval(() => {
             if (acc) return;
             setAcc(true)
             actCompany && getListAllTicket(actCompany)
             setAcc(false)
-        }, 5000)
+        }, 10000)
     }, [actCompany, getListAllTicket])
-
+    
     return (
         <div className="list_view">
             <Title title="Senhas em espera"/>
