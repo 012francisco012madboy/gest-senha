@@ -5,5 +5,6 @@ export interface ICounter{
      service: string
      id_user: string
      user: string
+     id_assistant: string
      id_front_desk: string
 }

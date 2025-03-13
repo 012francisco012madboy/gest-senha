@@ -37,6 +37,7 @@ const ListView = () => {
                         </thead>
                         <tbody>
                             {
+                                listAllTicket &&
                                 listAllTicket?.map((each, i) => (
                                     <tr key={i}>
                                         <td>{each.ref}</td>

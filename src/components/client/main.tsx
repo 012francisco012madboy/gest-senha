@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { Load, Title } from "../other/extra";
 import { GlobalContext } from "../../context/global-context";
 import { AuthContext } from "../../context/auth-context";
-// import { PiCheckCircle } from "react-icons/pi";
+import { PiCheckCircle } from "react-icons/pi";
 import { Api } from "../../server/api";
 
 const Main = () => {
     const { actCompany, setTextAlert, setTypeAlert } = useContext(AuthContext)
-    const { getListCounterActive, listCounter } = useContext(GlobalContext)
+    const { getListActiveService, listService } = useContext(GlobalContext)
 
     const [ service, setService ] = useState("")
     
@@ -16,8 +16,8 @@ const Main = () => {
     const [ btnDisabled, setBtnDisabled ] = useState(false)
 
     useEffect(() => {
-        actCompany && getListCounterActive(actCompany)
-    }, [actCompany, getListCounterActive])
+        actCompany && getListActiveService(actCompany)
+    }, [actCompany, getListActiveService])
 
     function cleanTicket(){
         const timer = setTimeout(() => {
@@ -64,15 +64,14 @@ const Main = () => {
             <Title title="Criar senhas"/>
             <div className="services">
                 {
-                    listCounter?.map((each, i) => (
+                    listService?.map((each, i) => (
                         <div
                             key={i}
-                            className={service == each.id_service ? "each_serv active" : "each_serv"}
-                            onClick={() => setService(each.id_service)}
+                            className={service == each.id ? "each_serv active" : "each_serv"}
+                            onClick={() => setService(each.id)}
                         >
-                            <p>{each.service}</p>
-                            <strong>{each.ref}</strong>
-                            {/* <i>{service == each.id_service ? <PiCheckCircle/> : ""}</i> */}
+                            <p>{each.name}</p>
+                            <i>{service == each.id ? <PiCheckCircle/> : ""}</i>
                         </div>
                     ))
                 }

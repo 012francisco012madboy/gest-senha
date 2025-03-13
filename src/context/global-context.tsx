@@ -17,6 +17,7 @@ interface GlobalContextData{
   getListService: (data: string) => void
   countService: string
   getCountService: (data: string) => void
+  getListActiveService: (data: string) => void
   getEachService: (data: string, setEachService: (data: IDefault) => void) => void
   
   /* BALCÃO */

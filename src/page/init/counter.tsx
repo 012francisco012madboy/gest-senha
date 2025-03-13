@@ -51,7 +51,7 @@ const Counter = () => {
                         listCounter?.map((each, i) => (
                             <div key={i}
                                 className="each_choice"
-                                onClick={() => saveSelectCounter(each.id_counter)}
+                                onClick={() => saveSelectCounter(each.id_front_desk)}
                             >
                                 <p>Balcão {each.ref}</p>
                             </div>

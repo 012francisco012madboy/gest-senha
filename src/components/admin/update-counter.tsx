@@ -72,9 +72,28 @@ const UpdateCounter = ({counter} : counterProps) => {
             setTypeAlert(false)
         })
     }
+    
+    function removeEmp(){
+        Api.put(`/user-assistant-remove/${eachCounter?.id_assistant}`)
+        .then((response) => {
+            setShowModal(null)
+            setEachCounter(undefined)
+            actCompany && getListCounter(actCompany)
+            setTextAlert(response?.data.message)
+            setTypeAlert(true)
+        })
+        .catch((erro) => {
+            setTextAlert(erro?.response.data.message)
+            setTypeAlert(false)
+        })
+    }
 
-    function validateQuestion(){
+    function validateServiceQuestion(){
         setTextQuestion("Desejas desassociar este serviço?")
+    }
+
+    function validateEmpQuestion(){
+        setTextQuestion("Desejas desassociar este funcionário?")
     }
 
     return (
@@ -97,7 +116,7 @@ const UpdateCounter = ({counter} : counterProps) => {
                         />
                     </div>
                     {
-                        eachCounter?.id_front_desk &&
+                        eachCounter?.service &&
                         <div className="each-input">
                             <label htmlFor="">Serviço associado</label>
                             <input
@@ -110,9 +129,29 @@ const UpdateCounter = ({counter} : counterProps) => {
                             />
                             <label
                                 style={{fontSize: "10pt", cursor: "pointer", color: "red"}}
-                                onClick={validateQuestion}
+                                onClick={validateServiceQuestion}
                             >
                                 <PiMinusCircle/> Desassociar o serviço
+                            </label>
+                        </div>
+                    }
+                    {   
+                        eachCounter?.user &&
+                        <div className="each-input">
+                            <label htmlFor="">Funcionário associado</label>
+                            <input
+                                required
+                                disabled
+                                type="text"
+                                defaultValue={eachCounter?.user}
+                                maxLength={3}
+                                placeholder="Ex: John Doe"
+                            />
+                            <label
+                                style={{fontSize: "10pt", cursor: "pointer", color: "red"}}
+                                onClick={validateEmpQuestion}
+                            >
+                                <PiMinusCircle/> Desassociar o funcionário
                             </label>
                         </div>
                     }
@@ -126,8 +165,12 @@ const UpdateCounter = ({counter} : counterProps) => {
                 <Alert  text={textAlert} type={typeAlert}/>
             }
             {
-                textQuestion && showModal == "update-counter" &&
+                textQuestion == "Desejas desassociar este serviço?" &&
                 <Question  text={textQuestion} validate={removeService}/>
+            }
+            {
+                textQuestion == "Desejas desassociar este funcionário?" &&
+                <Question  text={textQuestion} validate={removeEmp}/>
             }
         </Fragment>
     );

@@ -21,11 +21,14 @@ const Nav = () => {
                 <h1>GEST - SENHAS</h1>
             </div>
             <div className="nav_perfil">
-                <div className="reference">
-                    <div className="ref">
-                        <strong>Balcão <span>{actUserAssistant?.ref_counter}</span></strong>
+                {
+                    actUserAssistant?.ref_counter &&
+                    <div className="reference">
+                        <div className="ref">
+                            <strong>Balcão <span>{actUserAssistant?.ref_counter}</span></strong>
+                        </div>
                     </div>
-                </div>
+                }
                 <div className="user">
                     <div className="icon">
                         <i><PiUserCircle/></i>

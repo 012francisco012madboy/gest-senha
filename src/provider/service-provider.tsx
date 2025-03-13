@@ -17,6 +17,16 @@ const ServiceProvider = () => {
         })
     }, [])
 
+    const getListActiveService = useCallback( async(actCompany: string) => {
+        await Api.get(`service-available/${actCompany}`)
+        .then((response) =>{
+            setListService(response?.data)
+        })
+        .catch(erro =>{
+            console.log(erro)
+        })
+    }, [])
+
     const getCountService = useCallback( async(actCompany: string) => {
         await Api.get(`service-count/${actCompany}`)
         .then((response) =>{
@@ -42,7 +52,8 @@ const ServiceProvider = () => {
         getListService,
         countService,
         getCountService,
-        getEachService
+        getEachService,
+        getListActiveService
     }
 }
  
