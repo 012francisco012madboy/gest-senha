@@ -1,5 +1,3 @@
-import "../../css/view.css"
-
 import ActView from "../../shared/view/act-view";
 import ListView from "../../shared/view/listView";
 import Footer from "../../shared/view/footer";

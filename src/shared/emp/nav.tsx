@@ -1,7 +1,12 @@
-import { useContext, useEffect } from "react";
-import { PiSignOut, PiUserCircle } from "react-icons/pi";
+import { Fragment, useContext, useEffect } from "react";
 import { AuthContext } from "../../context/auth-context";
 import { Api } from "../../server/api";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { LogOut } from "lucide-react";
+import { Initials } from "@/components/initials";
 
 const Nav = () => {
     const { getUserAssistant, actUserAssistant, logout } = useContext(AuthContext)
@@ -10,45 +15,42 @@ const Nav = () => {
         getUserAssistant()
     }, [])
 
-    async function handleLogout(){
+    async function handleLogout() {
         await Api.put(`user-assistant-remove/${actUserAssistant?.id_assistant}`)
         logout()
     }
 
     return (
-        <div className="nav">
-            <div className="nav_logo">
-                <h1>GEST - SENHAS</h1>
+        <nav className="min-h-16 h-16 flex items-center justify-between px-4 bg-brand">
+            <div className="flex items-center gap-2">
+                <h1 className="text-xl">GEST - SENHAS</h1>
             </div>
-            <div className="nav_perfil">
+            <div className="flex items-center gap-2">
                 {
                     actUserAssistant?.ref_counter &&
-                    <div className="reference">
-                        <div className="ref">
-                            <strong>Balcão <span>{actUserAssistant?.ref_counter}</span></strong>
-                        </div>
-                    </div>
+                    <Fragment>
+                        <Button type='button' variant="secondary" className='px-4 font-bold'>
+                            Balcão {actUserAssistant?.ref_counter}
+                        </Button>
+                        <Separator orientation='vertical' />
+                    </Fragment>
                 }
-                <div className="user">
-                    <div className="icon">
-                        <i><PiUserCircle/></i>
-                    </div>
-                    <div className="text">
-                        <p>{actUserAssistant?.name_user}</p>
-                    </div>
-                </div>
-                <div
-                    className="user"
-                    title="Terminar sessão"
-                    onClick={handleLogout}
-                >
-                    <div className="icon">
-                        <i><PiSignOut/></i>
-                    </div>
-                </div>
+                <DropdownMenu>
+                    <DropdownMenuTrigger className="bg-transparent border-none p-0 w-fit h-fit">
+                        <Avatar size='lg'>
+                            <AvatarFallback className="font-bold">{Initials(actUserAssistant?.name_user)}</AvatarFallback>
+                        </Avatar>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuItem variant='destructive' onClick={handleLogout}>
+                            <LogOut className="text-lg" />
+                            Sair
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
-        </div>
+        </nav>
     );
 }
- 
+
 export default Nav;
