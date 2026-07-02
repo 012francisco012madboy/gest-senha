@@ -6,7 +6,7 @@ const Init = () => {
     const navigate = useNavigate()
 
     return (
-        <div className="w-full h-dvh flex items-center justify-center bg-white">
+        <div className="w-full min-h-dvh flex items-center justify-center p-4 bg-white">
             <div className="flex flex-col gap-4">
                 <Button type="button" variant="primary" onClick={() => navigate("/view")}>
                     <Monitor/> Tela

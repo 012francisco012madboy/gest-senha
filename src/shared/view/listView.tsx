@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Title } from "../other/extra";
 import { AuthContext } from "../../context/auth-context";
 import { GlobalContext } from "../../context/global-context";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
 
 const ListView = () => {
     const { actCompany } = useContext(AuthContext)

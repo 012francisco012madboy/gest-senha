@@ -1,10 +1,10 @@
 import "../../css/admin.css"
 
-import Nav from "../../components/admin/nav";
-import Sidebar from "../../components/admin/sidebar";
+import Nav from "../../shared/admin/nav";
+import Sidebar from "../../shared/admin/sidebar";
 import { Fragment, ReactNode, useContext } from "react";
 import { AuthContext } from "../../context/auth-context";
-import { Alert } from "../../components/other/alert";
+import { Alert } from "../../shared/other/alert";
 
 interface adminProps{
     children: ReactNode

@@ -1,9 +1,9 @@
 import "../../css/init.css"
-import { SubTitle } from "../../components/other/extra";
+import { SubTitle } from "../../shared/other/extra";
 import { Fragment, useContext } from "react";
 import { AuthContext } from "../../context/auth-context";
 import { useNavigate } from "react-router-dom";
-import { Alert } from "../../components/other/alert";
+import { Alert } from "../../shared/other/alert";
 
 const SignUpComp = () => {
     const { name_company, setNameCompany, email_company, setEmailCompany, textAlert, setTextAlert, typeAlert, setTypeAlert } = useContext(AuthContext)

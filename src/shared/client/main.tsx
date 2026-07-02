@@ -3,11 +3,11 @@ import { Load, Title } from "../other/extra";
 import { GlobalContext } from "../../context/global-context";
 import { AuthContext } from "../../context/auth-context";
 import { Api } from "../../server/api";
-import { Item, ItemActions, ItemContent, ItemTitle } from "../ui/item";
+import { Item, ItemActions, ItemContent, ItemTitle } from "../../components/ui/item";
 import { ChevronRight } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "../../components/ui/button";
 import axios from "axios";
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "../../components/ui/skeleton";
 
 const Main = () => {
     const { actCompany, setTextAlert, setTypeAlert } = useContext(AuthContext)
@@ -64,7 +64,7 @@ const Main = () => {
     }
 
     return (
-        <div className="w-full h-dvh flex flex-col items-center justify-center overflow-y-auto">
+        <div className="w-full min-h-dvh flex flex-col items-center justify-center p-4 overflow-y-auto">
             <div className="max-w-xs w-full flex flex-col items-center justify-center gap-4 sm:gap-8">
                 <Title title="Criar senhas" />
                 <div className="w-full flex flex-col gap-2">

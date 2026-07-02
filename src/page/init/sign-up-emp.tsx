@@ -1,9 +1,9 @@
 import "../../css/init.css"
-import { Load, SubTitle } from "../../components/other/extra";
+import { Load, SubTitle } from "../../shared/other/extra";
 import { Fragment, useContext, useEffect, useState } from "react";
 import { Api } from "../../server/api";
 import { AuthContext } from "../../context/auth-context";
-import { Alert } from "../../components/other/alert";
+import { Alert } from "../../shared/other/alert";
 import { useNavigate } from "react-router-dom";
 
 const SignUpEmp = () => {

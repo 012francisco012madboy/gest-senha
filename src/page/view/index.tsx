@@ -1,8 +1,8 @@
 import "../../css/view.css"
 
-import ActView from "../../components/view/act-view";
-import ListView from "../../components/view/listView";
-import Footer from "../../components/view/footer";
+import ActView from "../../shared/view/act-view";
+import ListView from "../../shared/view/listView";
+import Footer from "../../shared/view/footer";
 
 const View = () => {
     return (

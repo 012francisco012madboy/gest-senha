@@ -1,10 +1,8 @@
-import "../../css/client.css"
-
-import Main from "../../components/client/main";
+import Main from "../../shared/client/main";
 import { Fragment } from "react/jsx-runtime";
 import { useContext } from "react";
 import { AuthContext } from "../../context/auth-context";
-import { Alert } from "../../components/other/alert";
+import { Alert } from "../../shared/other/alert";
 
 const Client = () => {
     const { textAlert, typeAlert } = useContext(AuthContext)

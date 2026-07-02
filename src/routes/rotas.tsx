@@ -7,16 +7,16 @@ import Emp from "../page/emp";
 import Client from "../page/client";
 import Admin from "../page/admin";
 import Render from "../render/default";
-import DashBoard from "../components/admin/dashboard";
-import ListEmp from "../components/admin/list-emp";
-import ListService from "../components/admin/list-service";
-import ListCounter from "../components/admin/list-counter";
-import ListSession from "../components/admin/list-session";
+import DashBoard from "../shared/admin/dashboard";
+import ListEmp from "../shared/admin/list-emp";
+import ListService from "../shared/admin/list-service";
+import ListCounter from "../shared/admin/list-counter";
+import ListSession from "../shared/admin/list-session";
 import SignUpComp from "../page/init/sign-up-comp";
 import SignUpEmp from "../page/init/sign-up-emp";
 import { Fragment, ReactNode, useContext } from "react";
 import { AuthContext } from "../context/auth-context";
-import { Alert } from "../components/other/alert";
+import { Alert } from "../shared/other/alert";
 
 interface itemProps{
     children: ReactNode

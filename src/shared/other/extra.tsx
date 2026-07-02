@@ -16,8 +16,8 @@ export const Title = ({title}: titleProps) => {
 
 export const SubTitle = ({title}: titleProps) => {
      return ( 
-          <div className="sub title">
-               <strong>{title}</strong>
+          <div className="w-full">
+               <strong className="text-xl uppercase text-brand">{title}</strong>
           </div>
      );
 }
