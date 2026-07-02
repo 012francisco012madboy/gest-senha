@@ -2,7 +2,7 @@ import Marquee from "react-fast-marquee";
 
 const Footer = () => {
     return (
-        <div className="footer">
+        <div className="w-full min-h-10 h-10 flex items-center bg-brand">
             <Marquee>
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem rem architecto nisi, tempore a aspernatur dolorum modi magnam voluptate? Quia temporibus culpa error, excepturi odio at amet itaque rerum facere.
             </Marquee>

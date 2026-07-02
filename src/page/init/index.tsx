@@ -1,29 +1,22 @@
-import "../../css/init.css"
-import { Link } from "react-router-dom";
-
-import { HiComputerDesktop } from "react-icons/hi2";
-import { FiUser  } from "react-icons/fi";
-import { RiFileList2Line } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { FileText, Monitor, UserRound } from 'lucide-react';
 
 const Init = () => {
+    const navigate = useNavigate()
+
     return (
-        <div className="init_container">
-            <div className="choice">
-                <Link to={"/view"}>
-                    <div className="each_choice">
-                        <p><i><HiComputerDesktop/> </i>Tela</p>
-                    </div>
-                </Link>
-                <Link to={"/client"}>
-                    <div className="each_choice">
-                        <p><i><RiFileList2Line /> </i>Cliente</p>
-                    </div>
-                </Link>
-                <Link to={"/sign-in"}>
-                    <div className="each_choice">
-                        <p><i><FiUser /> </i>Funcionário</p>
-                    </div>
-                </Link>
+        <div className="w-full h-dvh flex items-center justify-center bg-white">
+            <div className="flex flex-col gap-4">
+                <Button type="button" variant="primary" onClick={() => navigate("/view")}>
+                    <Monitor/> Tela
+                </Button>
+                <Button type="button" variant="primary" onClick={() => navigate("/client")}>
+                    <FileText/> Senhas
+                </Button>
+                <Button type="button" variant="primary" onClick={() => navigate("/sign-in")}>
+                    <UserRound/> Funcionário
+                </Button>
             </div>
         </div>
     );

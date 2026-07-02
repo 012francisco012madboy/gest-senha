@@ -1,25 +1,29 @@
-import { useContext, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { Load, Title } from "../other/extra";
 import { GlobalContext } from "../../context/global-context";
 import { AuthContext } from "../../context/auth-context";
-import { PiCheckCircle } from "react-icons/pi";
 import { Api } from "../../server/api";
+import { Item, ItemActions, ItemContent, ItemTitle } from "../ui/item";
+import { ChevronRight } from "lucide-react";
+import { Button } from "../ui/button";
+import axios from "axios";
+import { Skeleton } from "../ui/skeleton";
 
 const Main = () => {
     const { actCompany, setTextAlert, setTypeAlert } = useContext(AuthContext)
     const { getListActiveService, listService } = useContext(GlobalContext)
 
-    const [ service, setService ] = useState("")
-    
-    const [ ticket, setTicket ] = useState("")
+    const [service, setService] = useState("")
 
-    const [ btnDisabled, setBtnDisabled ] = useState(false)
+    const [ticket, setTicket] = useState("")
+
+    const [btnDisabled, setBtnDisabled] = useState(false)
 
     useEffect(() => {
         actCompany && getListActiveService(actCompany)
     }, [actCompany, getListActiveService])
 
-    function cleanTicket(){
+    function cleanTicket() {
         const timer = setTimeout(() => {
             setTicket("")
         }, 2000)
@@ -27,69 +31,79 @@ const Main = () => {
         return () => clearTimeout(timer);
     }
 
-    function handleTicket(e: React.FormEvent<HTMLFormElement>){
-        e.preventDefault()
+    async function handleTicket() {
+        if (!service) {
+            return console.log("Nenhum serviço selecionado")
+        }
 
-        if(service){
-            setBtnDisabled(true)
+        setBtnDisabled(true)
 
-            Api.post("/ticket-add", {
+        try {
+            const response = await Api.post("/ticket-add", {
                 service,
                 actCompany
             })
-            .then((response) => {
-                setTextAlert(response?.data.message)
-                setTypeAlert(true)
-                
-                setTicket(response?.data.ref)
-                cleanTicket()
 
-                setBtnDisabled(false)
+            setTextAlert(response?.data.message)
+            setTypeAlert(true)
 
-                setService("")
-            })
-            .catch((err) => {
-                setTextAlert(err?.response?.data.message)
-                setTypeAlert(false)
-
-                setBtnDisabled(false)
-
-                setService("")
-            })
+            setTicket(response?.data.ref)
+            cleanTicket()
+        }
+        catch (e) {
+            if (axios.isAxiosError(e)) {
+            }
+            else {
+                setTextAlert("Erro inesperado")
+            }
+            setTypeAlert(false)
+        }
+        finally {
+            setBtnDisabled(false)
         }
     }
 
     return (
-        <div className="main">
-            <Title title="Criar senhas"/>
-            <div className="services">
-                {
-                    listService?.map((each, i) => (
-                        <div
-                            key={i}
-                            className={service == each.id ? "each_serv active" : "each_serv"}
-                            onClick={() => setService(each.id)}
-                        >
-                            <p>{each.name}</p>
-                            <i>{service == each.id ? <PiCheckCircle/> : ""}</i>
-                        </div>
-                    ))
-                }
-            </div>
-            <form onSubmit={(e) => handleTicket(e)}>
-                <button
-                    type="submit"
-                    disabled={btnDisabled}
-                    className={service && "active"}
-                >
-                    {btnDisabled ? <Load/> : "Confirmar"}
-                </button>
-            </form>
-            <div className="result">
-                <strong className={ticket ? "active" : ""}>A tua senha é: {ticket}</strong>
+        <div className="w-full h-dvh flex flex-col items-center justify-center overflow-y-auto">
+            <div className="max-w-xs w-full flex flex-col items-center justify-center gap-4 sm:gap-8">
+                <Title title="Criar senhas" />
+                <div className="w-full flex flex-col gap-2">
+                    {
+                        listService?.length == undefined ?
+                            <Fragment>
+                                <Skeleton className="w-full h-10 rounded-lg" />
+                                <Skeleton className="w-full h-10 rounded-lg" />
+                                <Skeleton className="w-full h-10 rounded-lg" />
+                            </Fragment> :
+                            listService.length == 0 ?
+                                <p className="text-brand text-center">Nenhum serviço disponível</p> :
+                                <Fragment>
+                                    {
+                                        listService?.map((each, i) => (
+                                            <div key={i} onClick={() => setService(each.id)}>
+                                                <Item variant="outline" className={`${service == each.id && "bg-gray-50"}`}>
+                                                    <ItemContent>
+                                                        <ItemTitle>{each.name}</ItemTitle>
+                                                    </ItemContent>
+                                                    <ItemActions>
+                                                        <ChevronRight className="size-6" />
+                                                    </ItemActions>
+                                                </Item>
+                                            </div>
+                                        ))
+                                    }
+                                    <Button type="button" variant="primary" onClick={handleTicket} disabled={btnDisabled} className="w-full mt-2">
+                                        {btnDisabled ? <Load /> : "Confirmar"}
+                                    </Button>
+                                </Fragment>
+                    }
+                </div>
+                <div className="result">
+                    <strong className={ticket ? "active" : ""}>A tua senha é: {ticket}</strong>
+                </div>
             </div>
         </div>
     );
 }
- 
+
 export default Main;

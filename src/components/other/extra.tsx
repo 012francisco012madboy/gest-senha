@@ -8,8 +8,8 @@ interface titleProps{
 
 export const Title = ({title}: titleProps) => {
      return ( 
-          <div className="title">
-               <strong>{title}</strong>
+          <div className="w-full text-center">
+               <strong className="text-2xl uppercase text-brand">{title}</strong>
           </div>
      );
 }

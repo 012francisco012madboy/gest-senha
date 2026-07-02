@@ -5,41 +5,37 @@ import { ITicket } from "../../interface/ITicket";
 
 const ActView = () => {
     const { actCompany } = useContext(AuthContext)
-    const { getListLastTicket} = useContext(GlobalContext)
+    const { getListLastTicket } = useContext(GlobalContext)
 
-    const [ ticket, setTicket ] = useState<ITicket>()
+    const [ticket, setTicket] = useState<ITicket>()
 
-    const [ acc, setAcc ] = useState<boolean>()
+    // const [acc, setAcc] = useState<boolean>()
 
     useEffect(() => {
         actCompany && getListLastTicket(actCompany, setTicket)
     }, [actCompany, getListLastTicket, setTicket])
 
-    useEffect(() => {
+    /* useEffect(() => {
         setInterval(() => {
             if (acc) return;
             setAcc(true)
             actCompany && getListLastTicket(actCompany, setTicket)
             setAcc(false)
         }, 10000)
-    }, [actCompany, getListLastTicket, setTicket])
+    }, [actCompany, getListLastTicket, setTicket]) */
 
     return (
-        <div className="act_view">
-            <div className="each_view left">
-                <div className="text">
-                    <p>{ticket?.ref}</p>
-                    <strong>Senha</strong>
-                </div>
+        <div className="w-full min-h-48 h-48 grid grid-cols-2 border-b border-brand">
+            <div className="w-full flex flex-col items-center justify-center gap-4 bg-brand">
+                <p className="text-2xl ">Senha</p>
+                <strong className="text-4xl">{ticket?.ref ?? '?'}</strong>
             </div>
-            <div className="each_view right">
-                <div className="text">
-                    <p>{ticket?.counter}</p>
-                    <strong>Balcão</strong>
-                </div>
+            <div className="w-full flex flex-col items-center justify-center gap-4 text-brand">
+                <p className="text-2xl ">Balcão</p>
+                <strong className="text-4xl">{ticket?.counter ?? '?'}</strong>
             </div>
         </div>
     );
 }
- 
+
 export default ActView;

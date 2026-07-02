@@ -20,7 +20,7 @@ body{
     font-family: Pop;
     overflow: auto;
     scrollbar-width: none;
-    color: var(--col3);
+    color: #ffffff;
 }
 body::-webkit-scrollbar{
     display: none;

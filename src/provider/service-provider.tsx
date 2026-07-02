@@ -4,10 +4,11 @@ import { IDefault } from "../interface/IDefault"
 
 const ServiceProvider = () => {
     /* SERVICE DATA */
-    const [ listService, setListService ] =  useState<IDefault[]>([])
+    const [ listService, setListService ] =  useState<IDefault[] | undefined>(undefined)
     const [ countService, setCountService ] =  useState("")
 
     const getListService = useCallback( async(actCompany: string) => {
+        setListService(undefined)
         await Api.get(`service-view/${actCompany}`)
         .then((response) =>{
             setListService(response?.data)
@@ -18,6 +19,7 @@ const ServiceProvider = () => {
     }, [])
 
     const getListActiveService = useCallback( async(actCompany: string) => {
+        setListService(undefined)
         await Api.get(`service-available/${actCompany}`)
         .then((response) =>{
             setListService(response?.data)
