@@ -1,179 +1,157 @@
-import { Fragment, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { PiMinusCircle, PiXCircleBold } from "react-icons/pi";
-import { Load, SubTitle } from "../other/extra";
+import { SubTitle } from "../other/extra";
 import { AuthContext } from "../../context/auth-context";
 import { Api } from "../../server/api";
 import { GlobalContext } from "../../context/global-context";
-import { Alert, Question } from "../other/alert";
 import { IDefault } from "../../interface/IDefault";
 import { ICounter } from "../../interface/ICounter";
+import { Spinner } from "@/components/ui/spinner";
 
-interface counterProps{
+interface counterProps {
     counter: IDefault
 }
 
-const UpdateCounter = ({counter} : counterProps) => {
-    const { actCompany, textQuestion, setTextQuestion, showModal, setShowModal, textAlert, setTextAlert, typeAlert, setTypeAlert } = useContext(AuthContext)
-    const { getListCounter, getEachCounter} = useContext(GlobalContext)
+const UpdateCounter = ({ counter }: counterProps) => {
+    const { actCompany, showModal, setShowModal, setTextAlert, setTypeAlert } = useContext(AuthContext)
+    const { getListCounter, getEachCounter } = useContext(GlobalContext)
 
-    const [ ref, setRef ] = useState("")
+    const [ref, setRef] = useState("")
     const id_company = actCompany
 
-    const [ eachCounter, setEachCounter ] = useState<ICounter | undefined>()
+    const [eachCounter, setEachCounter] = useState<ICounter | undefined>()
 
     useEffect(() => {
         getEachCounter(counter.id, setEachCounter)
     }, [getEachCounter, counter, setEachCounter])
 
-    const [ btnDisabled, setBtnDisabled ] = useState(false)
+    const [disabledButton, setDisabledButton] = useState(false)
 
-    function updateCounter(e: React.FormEvent<HTMLFormElement>){
+    function updateCounter(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
 
-        if(ref){
-            setBtnDisabled(true)
+        if (ref) {
+            setDisabledButton(true)
 
             Api.put(`/counter-update/${counter.id}`, {
                 ref,
                 id_company
             })
-            .then((response) => {
-                setRef("")
-                setShowModal(null)
-                actCompany && getListCounter(actCompany)
-                setBtnDisabled(false)
-                setTextAlert(response?.data.message)
-                setTypeAlert(true)
-                setEachCounter(undefined)
-            })
-            .catch((erro) => {
-                setBtnDisabled(false)
-                setTextAlert(erro?.response.data.message)
-                setTypeAlert(false)
-            })
+                .then((response) => {
+                    setRef("")
+                    setShowModal(null)
+                    actCompany && getListCounter(actCompany)
+                    setDisabledButton(false)
+                    setTextAlert(response?.data.message)
+                    setTypeAlert(true)
+                    setEachCounter(undefined)
+                })
+                .catch((erro) => {
+                    setDisabledButton(false)
+                    setTextAlert(erro?.response.data.message)
+                    setTypeAlert(false)
+                })
         }
-        else{
+        else {
             setTextAlert("Preencha o campo")
             setTypeAlert(false)
         }
     }
-    
-    function removeService(){
+
+    function removeService() {
         Api.put(`/front-desk-remove/${eachCounter?.id_front_desk}`)
-        .then((response) => {
-            setShowModal(null)
-            setEachCounter(undefined)
-            actCompany && getListCounter(actCompany)
-            setTextAlert(response?.data.message)
-            setTypeAlert(true)
-        })
-        .catch((erro) => {
-            setTextAlert(erro?.response.data.message)
-            setTypeAlert(false)
-        })
+            .then((response) => {
+                setShowModal(null)
+                setEachCounter(undefined)
+                actCompany && getListCounter(actCompany)
+                setTextAlert(response?.data.message)
+                setTypeAlert(true)
+            })
+            .catch((erro) => {
+                setTextAlert(erro?.response.data.message)
+                setTypeAlert(false)
+            })
     }
-    
-    function removeEmp(){
+
+    function removeEmp() {
         Api.put(`/user-assistant-remove/${eachCounter?.id_assistant}`)
-        .then((response) => {
-            setShowModal(null)
-            setEachCounter(undefined)
-            actCompany && getListCounter(actCompany)
-            setTextAlert(response?.data.message)
-            setTypeAlert(true)
-        })
-        .catch((erro) => {
-            setTextAlert(erro?.response.data.message)
-            setTypeAlert(false)
-        })
-    }
-
-    function validateServiceQuestion(){
-        setTextQuestion("Desejas desassociar este serviço?")
-    }
-
-    function validateEmpQuestion(){
-        setTextQuestion("Desejas desassociar este funcionário?")
+            .then((response) => {
+                setShowModal(null)
+                setEachCounter(undefined)
+                actCompany && getListCounter(actCompany)
+                setTextAlert(response?.data.message)
+                setTypeAlert(true)
+            })
+            .catch((erro) => {
+                setTextAlert(erro?.response.data.message)
+                setTypeAlert(false)
+            })
     }
 
     return (
-        <Fragment>
-            <div className={showModal == "update-counter" ? "overlay-container active" : "overlay-container"}>
-                <form className="overlay-content" onSubmit={(e) => updateCounter(e)}>
-                    <div className="each-title">
-                        <SubTitle title="Atualizar um balcão"/>
-                        <i onClick={() => {setShowModal(null), setEachCounter(undefined)}}><PiXCircleBold/></i>
-                    </div>
+        <div className={showModal == "update-counter" ? "overlay-container active" : "overlay-container"}>
+            <form className="overlay-content" onSubmit={(e) => updateCounter(e)}>
+                <div className="each-title">
+                    <SubTitle title="Atualizar um balcão" />
+                    <i onClick={() => { setShowModal(null), setEachCounter(undefined) }}><PiXCircleBold /></i>
+                </div>
+                <div className="each-input">
+                    <label htmlFor="">Referência do balcão (A-Z)</label>
+                    <input
+                        required
+                        type="text"
+                        defaultValue={counter.name}
+                        maxLength={3}
+                        placeholder="Ex: A"
+                        onChange={(e) => setRef(e.target.value)}
+                    />
+                </div>
+                {
+                    eachCounter?.service &&
                     <div className="each-input">
-                        <label htmlFor="">Referência do balcão (A-Z)</label>
+                        <label htmlFor="">Serviço associado</label>
                         <input
                             required
+                            disabled
                             type="text"
-                            defaultValue={counter.name}
+                            defaultValue={eachCounter?.service}
                             maxLength={3}
-                            placeholder="Ex: A"
-                            onChange={(e) => setRef(e.target.value)}
+                            placeholder="Ex: Depósito"
                         />
+                        <label
+                            style={{ fontSize: "10pt", cursor: "pointer", color: "red" }}
+                            onClick={removeService}
+                        >
+                            <PiMinusCircle /> Desassociar o serviço
+                        </label>
                     </div>
-                    {
-                        eachCounter?.service &&
-                        <div className="each-input">
-                            <label htmlFor="">Serviço associado</label>
-                            <input
-                                required
-                                disabled
-                                type="text"
-                                defaultValue={eachCounter?.service}
-                                maxLength={3}
-                                placeholder="Ex: Depósito"
-                            />
-                            <label
-                                style={{fontSize: "10pt", cursor: "pointer", color: "red"}}
-                                onClick={validateServiceQuestion}
-                            >
-                                <PiMinusCircle/> Desassociar o serviço
-                            </label>
-                        </div>
-                    }
-                    {   
-                        eachCounter?.user &&
-                        <div className="each-input">
-                            <label htmlFor="">Funcionário associado</label>
-                            <input
-                                required
-                                disabled
-                                type="text"
-                                defaultValue={eachCounter?.user}
-                                maxLength={3}
-                                placeholder="Ex: John Doe"
-                            />
-                            <label
-                                style={{fontSize: "10pt", cursor: "pointer", color: "red"}}
-                                onClick={validateEmpQuestion}
-                            >
-                                <PiMinusCircle/> Desassociar o funcionário
-                            </label>
-                        </div>
-                    }
-                    <div className="each-button">
-                        <button disabled={btnDisabled} type="submit">{btnDisabled ? <Load/> : "Salvar"}</button>
+                }
+                {
+                    eachCounter?.user &&
+                    <div className="each-input">
+                        <label htmlFor="">Funcionário associado</label>
+                        <input
+                            required
+                            disabled
+                            type="text"
+                            defaultValue={eachCounter?.user}
+                            maxLength={3}
+                            placeholder="Ex: John Doe"
+                        />
+                        <label
+                            style={{ fontSize: "10pt", cursor: "pointer", color: "red" }}
+                            onClick={removeEmp}
+                        >
+                            <PiMinusCircle /> Desassociar o funcionário
+                        </label>
                     </div>
-                </form>
-            </div>
-            {
-                textAlert &&
-                <Alert  text={textAlert} type={typeAlert}/>
-            }
-            {
-                textQuestion == "Desejas desassociar este serviço?" &&
-                <Question  text={textQuestion} validate={removeService}/>
-            }
-            {
-                textQuestion == "Desejas desassociar este funcionário?" &&
-                <Question  text={textQuestion} validate={removeEmp}/>
-            }
-        </Fragment>
+                }
+                <div className="each-button">
+                    <button disabled={disabledButton} type="submit">{disabledButton ? <Spinner /> : "Salvar"}</button>
+                </div>
+            </form>
+        </div>
     );
 }
- 
+
 export default UpdateCounter;

@@ -23,7 +23,7 @@ interface AuthContextData{
 
   /* SESSION */
   logado: boolean
-  login:(email: string, password:string, setBtnDisabled: (data: boolean) => void) => void
+  login:(email: string, password:string, setDisabledButton: (data: boolean) => void) => void
   logout:() => void
   getUser:() => void
   getUserAssistant:() => void

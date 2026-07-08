@@ -4,15 +4,21 @@ import Rotas from './routes/rotas'
 import AuthProvider from './context/auth-provider'
 import GlobalProvider from './context/global-provider'
 import { BrowserRouter } from 'react-router-dom'
+import { Toaster } from 'sonner'
+import { AlertProvider } from './provider/alert'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-        <GlobalProvider>
-          <Rotas/>
-        </GlobalProvider>
-      </AuthProvider>
-    </BrowserRouter>
+    <Toaster richColors position="top-center" />
+
+    <AlertProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <GlobalProvider>
+            <Rotas />
+          </GlobalProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </AlertProvider>
   </StrictMode>,
 )

@@ -5,32 +5,42 @@ import { GlobalContext } from "../../context/global-context";
 import { Api } from "../../server/api";
 import { Button } from "@/components/ui/button";
 import { BellRing, Check, CornerUpLeft, CornerUpRight, X } from "lucide-react";
+import { useAlert } from "@/provider/alert";
+import axios from "axios";
 
 const Center = () => {
-    const { actCompany, setTextAlert, setTypeAlert, actUserAssistant, voice } = useContext(AuthContext)
+    const { actCompany, actUserAssistant, voice } = useContext(AuthContext)
     const { actTicket, setActTicket, getActTicket, getListTicket } = useContext(GlobalContext)
+
+    const { FailedAlert, SuccessAlert } = useAlert()
 
     useEffect(() => {
         actUserAssistant && getActTicket(actUserAssistant?.id_assistant)
     }, [actUserAssistant, getActTicket])
 
-    function handleFinished(state: string) {
-        if (actTicket && state) {
-            Api.put(`/ticket-call-finished/${actTicket.id_ref}`, {
+    async function handleFinished(state: string) {
+        if (!actTicket || !state) {
+            return FailedAlert("Erro de operação com a senha")
+        }
+
+        try {
+            const response = await Api.put(`/ticket-call-finished/${actTicket.id_ref}`, {
                 state
             })
-                .then((response) => {
-                    setTextAlert(response?.data.message)
-                    setTypeAlert(true)
 
-                    setActTicket(undefined)
+            SuccessAlert(response?.data.message)
 
-                    actUserAssistant && actCompany && getListTicket(actUserAssistant?.id_service, actCompany)
-                })
-                .catch((err) => {
-                    setTextAlert(err?.response?.data.message)
-                    setTypeAlert(false)
-                })
+            setActTicket(undefined)
+
+            actUserAssistant && actCompany && getListTicket(actUserAssistant?.id_service, actCompany)
+        }
+        catch (e) {
+            if (axios.isAxiosError(e)) {
+                FailedAlert(e?.response?.data.message || "Erro inesperado")
+            }
+            else {
+                FailedAlert("Erro inesperado")
+            }
         }
     }
 

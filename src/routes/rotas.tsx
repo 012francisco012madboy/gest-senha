@@ -11,11 +11,8 @@ import ListEmp from "../shared/admin/list-emp";
 import ListService from "../shared/admin/list-service";
 import ListCounter from "../shared/admin/list-counter";
 import ListSession from "../shared/admin/list-session";
-import SignUpComp from "../page/init/sign-up-comp";
-import SignUpEmp from "../page/init/sign-up-emp";
 import { Fragment, ReactNode, useContext } from "react";
 import { AuthContext } from "../context/auth-context";
-import { Alert } from "../shared/other/alert";
 import AdminLayout from "@/layout/admin";
 
 interface itemProps{
@@ -34,11 +31,10 @@ function PrivateRoute({children, permited}: itemProps){
         )
     }
      
-    if(user?.id_type && !permited.includes(String(user.id_type))){
+    if(user?.idType && !permited.includes(String(user.idType))){
          return (
             <Fragment>
                 <SignIn/>
-                <Alert text="Permissão recusada" type={false}/>
             </Fragment>
          )
     }
@@ -54,8 +50,6 @@ const Rotas = () => {
     return (
         <Routes>
             <Route path='/sign-in' element={<SignIn/>}/>
-            <Route path='/sign-up-company' element={<SignUpComp/>}/>
-            <Route path='/sign-up-employee' element={<SignUpEmp/>}/>
 
             <Route path='/' element={<Init/>}/>
             <Route path='/view' element={<View/>}/>

@@ -4,17 +4,21 @@ import { IUser } from "../interface/IUser"
 import ExtraProvider from "./extra-provider"
 import { useNavigate } from "react-router-dom"
 import { IUserAssistant } from "../interface/IUserAssistant"
+import { useAlert } from "./alert"
+import axios from "axios"
 
 const SessionProvider = () => {
     const { setTextAlert, setTypeAlert } = ExtraProvider()
-    
-    const [ user, setUser] = useState<IUser>()
 
-    const [ actUser, setActUser] = useState<string | null>()
-    const [ actUserAssistant, setActUserAssistant] = useState<IUserAssistant>()
-    const [ actCompany, setActCompany] = useState<string | null>()
+    const { FailedAlert, SuccessAlert } = useAlert()
 
-    const [ logado, setLogado] = useState<boolean>(false)
+    const [user, setUser] = useState<IUser>()
+
+    const [actUser, setActUser] = useState<string | null>()
+    const [actUserAssistant, setActUserAssistant] = useState<IUserAssistant>()
+    const [actCompany, setActCompany] = useState<string | null>()
+
+    const [logado, setLogado] = useState<boolean>(false)
 
     const navigate = useNavigate()
 
@@ -30,16 +34,16 @@ const SessionProvider = () => {
     /* USER ASSISTANT DATA */
     const getUserAssistant = useCallback(async () => {
 
-        if(localStorage.getItem("actAssitant") && localStorage.getItem("actCounter")){
+        if (localStorage.getItem("actAssitant") && localStorage.getItem("actCounter")) {
             await Api.get(`user-assistant-view/${localStorage.getItem("actAssitant")}/${localStorage.getItem("actCounter")}`)
-            .then((response) => {
-                setActUserAssistant(response?.data)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+                .then((response) => {
+                    setActUserAssistant(response?.data)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
         }
-        else{
+        else {
             navigate("/counter")
         }
 
@@ -47,7 +51,7 @@ const SessionProvider = () => {
 
     /* SESSION LOAD */
     useEffect(() => {
-        if(!actUser){
+        if (!actUser) {
             setActUser(localStorage.getItem("actUser"))
         }
 
@@ -60,46 +64,51 @@ const SessionProvider = () => {
 
         async function loadUser() {
             await Api.get(`user-show/${actUser}`)
-            .then(response => {
-                setUser(response?.data)
-                setLogado(true)
-                
-                setActCompany(response?.data.id_company)
-            })
-            .catch(() => {
-                setLogado(false)
-            })
+                .then(response => {
+                    setUser(response?.data)
+                    setLogado(true)
+
+                    setActCompany(response?.data.id_company)
+                })
+                .catch(() => {
+                    setLogado(false)
+                })
         }
     }, [actUser])
 
     /* SESSION LOGIN */
-    const login = useCallback(async (email: string, password: string, setBtnDisabled: (data: boolean) => void) => {
-        setBtnDisabled(true)
-        
-        await Api.post("user-signin", {
-            email,
-            password
-        })
-        .then((response) => {
+    const login = useCallback(async (email: string, password: string, setDisabledButton: (data: boolean) => void) => {
+        setDisabledButton(true)
+
+        try {
+            const response = await Api.post("user-signin", {
+                email,
+                password
+            })
+
             localStorage.setItem("actUser", response?.data.user?.id)
 
             setActUser(response?.data.user?.id)
 
-            setTextAlert(response?.data.message)
-            setTypeAlert(true)
+            SuccessAlert(response?.data.message)
 
             getUser()
 
-            setBtnDisabled(false)
-
-            return response?.data.user?.id_type == "1" ? navigate("/admin") :
-            response?.data.user?.id_type == "2" ? navigate("/counter") : ""
-        })
-        .catch((erro) => {
-            setTextAlert(erro?.response.data.message)
-            setTypeAlert(false)
-            setBtnDisabled(false)
-        })
+            
+            return response?.data.user?.idType == "1" ? navigate("/admin") :
+            response?.data.user?.idType == "2" ? navigate("/counter") : ""
+        }
+        catch (e) {
+            if (axios.isAxiosError(e)) {
+                FailedAlert(e?.response?.data.message || "Erro inesperado")
+            }
+            else {
+                FailedAlert("Erro inesperado")
+            }
+        }
+        finally{
+            setDisabledButton(false)
+        }
     }, [getUser, setTextAlert, setTypeAlert, navigate])
 
     /* SESSION LOGOUT */
@@ -109,7 +118,7 @@ const SessionProvider = () => {
         setLogado(false)
 
         localStorage.removeItem("actUser")
-        
+
         localStorage.removeItem("actAssitant")
         localStorage.removeItem("actCounter")
     }

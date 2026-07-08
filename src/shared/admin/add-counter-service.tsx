@@ -1,11 +1,12 @@
 import { Fragment, useContext, useEffect, useState } from "react";
 import { PiXCircleBold } from "react-icons/pi";
-import { Load, SubTitle } from "../other/extra";
+import { SubTitle } from "../other/extra";
 import { AuthContext } from "../../context/auth-context";
 import { IDefault } from "../../interface/IDefault";
 import { GlobalContext } from "../../context/global-context";
 import { Api } from "../../server/api";
 import { ICounter } from "../../interface/ICounter";
+import { Spinner } from "@/components/ui/spinner";
 
 interface counterProps{
     counter: IDefault
@@ -20,7 +21,7 @@ const AddCounterService = ({ counter } : counterProps) => {
     
     const [ id_service, setIdService ] = useState("")
 
-    const [ btnDisabled, setBtnDisabled ] = useState(false)
+    const [ disabledButton, setDisabledButton ] = useState(false)
     
         const [ eachCounter, setEachCounter ] = useState<ICounter | undefined>()
 
@@ -36,7 +37,7 @@ const AddCounterService = ({ counter } : counterProps) => {
         e.preventDefault()
 
         if(id_counter && id_service != "-1"){
-            setBtnDisabled(true)
+            setDisabledButton(true)
 
             Api.post("front-desk-add", {
                 id_service,
@@ -47,12 +48,12 @@ const AddCounterService = ({ counter } : counterProps) => {
                 setShowModal(null)
                 setEachCounter(undefined)
                 actCompany && getListCounter(actCompany)
-                setBtnDisabled(false)
+                setDisabledButton(false)
                 setTextAlert(response?.data.message)
                 setTypeAlert(true)
             })
             .catch((erro) => {
-                setBtnDisabled(false)
+                setDisabledButton(false)
                 setTextAlert(erro?.response.data.message)
                 setTypeAlert(false)
             })
@@ -100,7 +101,7 @@ const AddCounterService = ({ counter } : counterProps) => {
                     }
                 </div>
                 <div className="each-button">
-                    <button disabled={btnDisabled} type="submit">{btnDisabled ? <Load/> : "Salvar"}</button>
+                    <button disabled={disabledButton} type="submit">{disabledButton ? <Spinner/> : "Salvar"}</button>
                 </div>
             </form>
         </div>

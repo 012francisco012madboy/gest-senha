@@ -1,5 +1,5 @@
 import { Fragment, useContext, useEffect, useState } from "react";
-import { Load, Title } from "../other/extra";
+import { Title } from "../other/extra";
 import { GlobalContext } from "../../context/global-context";
 import { AuthContext } from "../../context/auth-context";
 import { Api } from "../../server/api";
@@ -8,35 +8,29 @@ import { ChevronRight } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import axios from "axios";
 import { Skeleton } from "../../components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
+import { useAlert } from "@/provider/alert";
 
 const Main = () => {
-    const { actCompany, setTextAlert, setTypeAlert } = useContext(AuthContext)
+    const { actCompany } = useContext(AuthContext)
     const { getListActiveService, listService } = useContext(GlobalContext)
+
+    const { FailedAlert, SuccessAlert } = useAlert()
 
     const [service, setService] = useState("")
 
-    const [ticket, setTicket] = useState("")
-
-    const [btnDisabled, setBtnDisabled] = useState(false)
+    const [disabledButton, setDisabledButton] = useState(false)
 
     useEffect(() => {
         actCompany && getListActiveService(actCompany)
     }, [actCompany, getListActiveService])
-
-    function cleanTicket() {
-        const timer = setTimeout(() => {
-            setTicket("")
-        }, 2000)
-
-        return () => clearTimeout(timer);
-    }
 
     async function handleTicket() {
         if (!service) {
             return console.log("Nenhum serviço selecionado")
         }
 
-        setBtnDisabled(true)
+        setDisabledButton(true)
 
         try {
             const response = await Api.post("/ticket-add", {
@@ -44,22 +38,18 @@ const Main = () => {
                 actCompany
             })
 
-            setTextAlert(response?.data.message)
-            setTypeAlert(true)
-
-            setTicket(response?.data.ref)
-            cleanTicket()
+            SuccessAlert("A tua senha é: " + response?.data.ref)
         }
         catch (e) {
             if (axios.isAxiosError(e)) {
+                FailedAlert(e?.response?.data.message || "Erro inesperado")
             }
             else {
-                setTextAlert("Erro inesperado")
+                FailedAlert("Erro inesperado")
             }
-            setTypeAlert(false)
         }
         finally {
-            setBtnDisabled(false)
+            setDisabledButton(false)
         }
     }
 
@@ -92,14 +82,11 @@ const Main = () => {
                                             </div>
                                         ))
                                     }
-                                    <Button type="button" variant="primary" onClick={handleTicket} disabled={btnDisabled} className="w-full mt-2">
-                                        {btnDisabled ? <Load /> : "Confirmar"}
+                                    <Button type="button" variant="primary" onClick={handleTicket} disabled={disabledButton} className="w-full mt-2">
+                                        {disabledButton ? <Spinner /> : "Confirmar"}
                                     </Button>
                                 </Fragment>
                     }
-                </div>
-                <div className="result">
-                    <strong className={ticket ? "active" : ""}>A tua senha é: {ticket}</strong>
                 </div>
             </div>
         </div>

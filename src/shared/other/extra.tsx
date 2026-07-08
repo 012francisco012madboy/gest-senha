@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import "../../css/extra.css"
 import { AuthContext } from "../../context/auth-context";
 
 interface titleProps{
@@ -9,7 +8,7 @@ interface titleProps{
 export const Title = ({title}: titleProps) => {
      return ( 
           <div className="w-full text-center">
-               <strong className="text-xl uppercase text-brand">{title}</strong>
+               <strong className="text-xl uppercase text-brand-secondary">{title}</strong>
           </div>
      );
 }
@@ -17,7 +16,7 @@ export const Title = ({title}: titleProps) => {
 export const SubTitle = ({title}: titleProps) => {
      return ( 
           <div className="w-full">
-               <strong className="text-lg uppercase text-brand">{title}</strong>
+               <strong className="text-lg uppercase text-brand-secondary">{title}</strong>
           </div>
      );
 }
@@ -40,13 +39,5 @@ export const Button = ({ modal } : buttonProps) => {
                     Adicionar
                </button>
           </div>
-    );
-}
-
-export const Load = () => {
-    return ( 
-        <div className="load">
-            <span></span>
-        </div>
     );
 }
