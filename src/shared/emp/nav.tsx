@@ -23,21 +23,23 @@ const Nav = () => {
     return (
         <nav className="min-h-16 h-16 flex items-center justify-between px-4 bg-brand">
             <div className="flex items-center gap-2">
-                <h1 className="text-xl">GEST - SENHAS</h1>
+                <h1 className="text-xl font-bold">GEST - SENHAS</h1>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="h-full flex items-center gap-2 sm:gap-4">
                 {
                     actUserAssistant?.ref_counter &&
                     <Fragment>
                         <Button type='button' variant="secondary" className='px-4 font-bold'>
                             Balcão {actUserAssistant?.ref_counter}
                         </Button>
-                        <Separator orientation='vertical' />
+                        <div className="h-full py-4">
+                            <Separator orientation='vertical' />
+                        </div>
                     </Fragment>
                 }
                 <DropdownMenu>
                     <DropdownMenuTrigger className="bg-transparent border-none p-0 w-fit h-fit">
-                        <Avatar size='lg'>
+                        <Avatar>
                             <AvatarFallback className="font-bold">{Initials(actUserAssistant?.name_user)}</AvatarFallback>
                         </Avatar>
                     </DropdownMenuTrigger>

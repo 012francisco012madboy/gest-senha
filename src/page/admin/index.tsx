@@ -1,6 +1,6 @@
 import "../../css/admin.css"
 
-import Nav from "../../shared/admin/nav";
+import Nav from "../../layout/admin/nav";
 import Sidebar from "../../shared/admin/sidebar";
 import { Fragment, ReactNode, useContext } from "react";
 import { AuthContext } from "../../context/auth-context";

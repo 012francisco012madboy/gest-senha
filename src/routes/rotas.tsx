@@ -5,7 +5,6 @@ import Counter from "../page/init/counter";
 import View from "../page/view";
 import Emp from "../page/emp";
 import Client from "../page/client";
-import Admin from "../page/admin";
 import Render from "../render/default";
 import DashBoard from "../shared/admin/dashboard";
 import ListEmp from "../shared/admin/list-emp";
@@ -17,6 +16,7 @@ import SignUpEmp from "../page/init/sign-up-emp";
 import { Fragment, ReactNode, useContext } from "react";
 import { AuthContext } from "../context/auth-context";
 import { Alert } from "../shared/other/alert";
+import AdminLayout from "@/layout/admin";
 
 interface itemProps{
     children: ReactNode
@@ -67,11 +67,11 @@ const Rotas = () => {
             </Route>
 
             <Route path="/admin" element={<PrivateRoute children={<Render/>} permited={["1"]}/>}>
-                <Route path="" element={<Admin children={<DashBoard/>}/>}/>
-                <Route path="list-employee" element={<Admin children={<ListEmp/>}/>}/>
-                <Route path="list-service" element={<Admin children={<ListService/>}/>}/>
-                <Route path="list-counter" element={<Admin children={<ListCounter/>}/>}/>
-                <Route path="list-session" element={<Admin children={<ListSession/>}/>}/>
+                <Route path="" element={<AdminLayout children={<DashBoard/>}/>}/>
+                <Route path="list-employee" element={<AdminLayout children={<ListEmp/>}/>}/>
+                <Route path="list-service" element={<AdminLayout children={<ListService/>}/>}/>
+                <Route path="list-counter" element={<AdminLayout children={<ListCounter/>}/>}/>
+                <Route path="list-session" element={<AdminLayout children={<ListSession/>}/>}/>
             </Route>
         </Routes>
      );

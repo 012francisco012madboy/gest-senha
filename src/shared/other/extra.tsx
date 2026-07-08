@@ -9,7 +9,7 @@ interface titleProps{
 export const Title = ({title}: titleProps) => {
      return ( 
           <div className="w-full text-center">
-               <strong className="text-2xl uppercase text-brand">{title}</strong>
+               <strong className="text-xl uppercase text-brand">{title}</strong>
           </div>
      );
 }
@@ -17,7 +17,7 @@ export const Title = ({title}: titleProps) => {
 export const SubTitle = ({title}: titleProps) => {
      return ( 
           <div className="w-full">
-               <strong className="text-xl uppercase text-brand">{title}</strong>
+               <strong className="text-lg uppercase text-brand">{title}</strong>
           </div>
      );
 }

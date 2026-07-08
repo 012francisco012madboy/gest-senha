@@ -1,101 +1,105 @@
-import { BsPen, BsPlusCircle, BsXCircle } from "react-icons/bs";
-import { Button } from "../other/extra";
 import { Fragment } from "react/jsx-runtime";
-import CreateCounter from "./create-counter";
-import AddCounterService from "./add-counter-service";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/auth-context";
 import { GlobalContext } from "../../context/global-context";
 import { IDefault } from "../../interface/IDefault";
-import UpdateCounter from "./update-counter";
 import { Api } from "../../server/api";
-import { Question } from "../other/alert";
+import { Button } from "@/components/ui/button";
+import { MoreHorizontal, Plus } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const ListCounter = () => {
-    const { showModal, setShowModal, actCompany, textQuestion, setTextQuestion, setTextAlert, setTypeAlert } = useContext(AuthContext)
+    const { setShowModal, actCompany, setTextAlert, setTypeAlert } = useContext(AuthContext)
     const { listCounter, getListCounter } = useContext(GlobalContext)
 
-    const [ counterSelected, setCounterSelected ] = useState<IDefault>({id: "", name: ""})
+    const [_, setCounterSelected] = useState<IDefault>({ id: "", name: "" })
 
     useEffect(() => {
         actCompany && getListCounter(actCompany)
     }, [getListCounter, actCompany])
 
-    function handleAddCounterService(id: string, counter: string){
-        setCounterSelected({id: id, name: counter})
+    function handleAddCounterService(id: string, counter: string) {
+        setCounterSelected({ id: id, name: counter })
         id && counter && setShowModal("add-counter-service")
     }
 
-    function handleUpdateCounter(id: string, counter: string){
-        setCounterSelected({id: id, name: counter})
+    function handleUpdateCounter(id: string, counter: string) {
+        setCounterSelected({ id: id, name: counter })
         id && setShowModal("update-counter")
     }
-    
-    function destroyCounter(){
-        Api.put(`/counter-destroy/${counterSelected.id}`)
-        .then((response) => {
-            actCompany && getListCounter(actCompany)
-            setTextAlert(response?.data.message)
-            setTypeAlert(true)
-        })
-        .catch((erro) => {
-            setTextAlert(erro?.response.data.message)
-            setTypeAlert(false)
-        })
-    }
 
-    function validateQuestion(id: string, name: string){
-        setTextQuestion("Desejas eliminar este balcão?")
-
-        setCounterSelected({id: id, name: name})
+    function destroyCounter(counterSelected: string) {
+        Api.put(`/counter-destroy/${counterSelected}`)
+            .then((response) => {
+                actCompany && getListCounter(actCompany)
+                setTextAlert(response?.data.message)
+                setTypeAlert(true)
+            })
+            .catch((erro) => {
+                setTextAlert(erro?.response.data.message)
+                setTypeAlert(false)
+            })
     }
 
     return (
         <Fragment>
-            <CreateCounter/>
-            <AddCounterService counter={counterSelected}/>
-            <UpdateCounter counter={counterSelected}/>
-            <div className="table-container">
-                <Button modal="create-counter"/>
-                <div className="table-content">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Referência</th>
-                                <th>Serviço</th>
-                                <th>Funcionário</th>
-                                <th>-</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                listCounter?.map((each, i) => (
-                                    <tr key={i}>
-                                        <td>{each.id_counter}</td>
-                                        <td>{each.ref}</td>
-                                        <td>{each.id_service ? each.service : '-'}</td>
-                                        <td>{each.id_user ? each.user : '-'}</td>
-                                        <td>
-                                            <div className="btn">
-                                                <i onClick={() => handleAddCounterService(each.id_counter, each.ref)}><BsPlusCircle/></i>
-                                                <i onClick={() => handleUpdateCounter(each.id_counter, each.ref)}><BsPen/></i>
-                                                <i onClick={() => validateQuestion(each.id_counter, each.ref)}><BsXCircle/></i>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </table>
+            {/* <CreateCounter />
+            <AddCounterService counter={counterSelected} />
+            <UpdateCounter counter={counterSelected} /> */}
+            <div className="w-full h-full flex flex-col gap-4 sm:gap-8 overflow-x-auto">
+                <div className="flex items-center justify-between">
+                    <h2 className="font-bold text-xl text-brand-secondary">Balcões</h2>
+                    <Button type="button" variant="primary">
+                        <Plus /> Adicionar
+                    </Button>
                 </div>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>ID</TableHead>
+                            <TableHead>Referência</TableHead>
+                            <TableHead>Serviço</TableHead>
+                            <TableHead>Funcionário</TableHead>
+                            <TableHead>Ações</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {
+                            listCounter?.map((each, i) => (
+                                <TableRow key={i}>
+                                    <TableCell>{each.id_counter}</TableCell>
+                                    <TableCell>{each.ref}</TableCell>
+                                    <TableCell>{each.id_service ? each.service : '-'}</TableCell>
+                                    <TableCell>{each.id_user ? each.user : '-'}</TableCell>
+                                    <TableCell>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger>
+                                                <MoreHorizontal className="text-companion" />
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem onClick={() => handleAddCounterService(each.id_counter, each.ref)}>
+                                                    Add serviço
+                                                </DropdownMenuItem>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuItem onClick={() => handleUpdateCounter(each.id_counter, each.ref)}>
+                                                    Editar
+                                                </DropdownMenuItem>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuItem variant="destructive" onClick={() => destroyCounter(each.id_counter)}>
+                                                    Eliminar
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        }
+                    </TableBody>
+                </Table>
             </div>
-            {
-                textQuestion && showModal == null &&
-                <Question text={textQuestion} validate={destroyCounter}/>
-            }
         </Fragment>
     );
 }
- 
+
 export default ListCounter;

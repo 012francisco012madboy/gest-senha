@@ -13,7 +13,7 @@ const Emp = () => {
     
     return (
         <Fragment>
-            <div className="w-full h-dvh flex flex-col gap-4 sm:gap-8 justify-between overflow-hidden">
+            <div className="w-full h-dvh flex flex-col gap-4 justify-between overflow-hidden">
                 <Nav/>
                 <Center/>
                 <Footer/>
