@@ -26,7 +26,7 @@ const ActView = () => {
 
     return (
         <div className="w-full min-h-48 h-48 grid grid-cols-2 border-b border-input">
-            <div className="w-full flex flex-col items-center justify-center gap-4 bg-brand">
+            <div className="w-full flex flex-col items-center justify-center gap-4 text-white bg-brand">
                 <p className="text-2xl">Senha</p>
                 <strong className="text-4xl">{ticket?.ref ?? '?'}</strong>
             </div>

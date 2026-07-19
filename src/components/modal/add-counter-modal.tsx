@@ -14,29 +14,27 @@ interface modalProps {
   setOpen: (data: boolean) => void;
 }
 
-const AddServiceModal = ({ open, setOpen }: modalProps) => {
-  const { getListService } = useContext(GlobalContext)
+const AddCounterModal = ({ open, setOpen }: modalProps) => {
+  const { getListCounter } = useContext(GlobalContext)
 
   const { FailedAlert, SuccessAlert } = useAlert();
 
   const [disabledButton, setDisabledButton] = useState(false);
 
-  const [name, setName] = useState("")
-  const [prefix, setPrefix] = useState("")
+  const [reference, setReference] = useState("")
 
   async function addService(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
-    if (name == "" || prefix == "") {
-      return FailedAlert("Preencha todos campos")
+    if (reference == "") {
+      return FailedAlert("Preencha a referência do balcão")
     }
 
     setDisabledButton(true)
 
     try {
-      const response = await authApi.post("service", {
-        name,
-        prefix
+      const response = await authApi.post("counter", {
+        reference
       })
 
       SuccessAlert(response?.data.message)
@@ -45,7 +43,7 @@ const AddServiceModal = ({ open, setOpen }: modalProps) => {
 
       setOpen(false)
 
-      getListService()
+      getListCounter()
     }
     catch (e) {
       if (axios.isAxiosError(e)) {
@@ -61,37 +59,25 @@ const AddServiceModal = ({ open, setOpen }: modalProps) => {
   }
 
   function cleanInput() {
-    setName("")
-    setPrefix("")
+    setReference("")
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Adicionar serviço</DialogTitle>
+          <DialogTitle>Adicionar balcão</DialogTitle>
         </DialogHeader>
         <form onSubmit={(e) => addService(e)}>
           <FieldGroup>
             <Field>
-              <FieldLabel>Serviço</FieldLabel>
+              <FieldLabel>Referência (A-Z ou 1-9)</FieldLabel>
               <InputGroup>
                 <InputGroupInput
                   required
                   type="text"
-                  placeholder="Digite o nome do serviço"
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </InputGroup>
-            </Field>
-            <Field>
-              <FieldLabel>Abreviação</FieldLabel>
-              <InputGroup>
-                <InputGroupInput
-                  required
-                  type="text"
-                  placeholder="Digite a abreviação do serviço"
-                  onChange={(e) => setPrefix(e.target.value)}
+                  placeholder="Digite a referência do balcão"
+                  onChange={(e) => setReference(e.target.value)}
                 />
               </InputGroup>
             </Field>
@@ -112,4 +98,4 @@ const AddServiceModal = ({ open, setOpen }: modalProps) => {
   );
 };
 
-export default AddServiceModal;
+export default AddCounterModal;

@@ -15,7 +15,7 @@ const Nav = () => {
     return (
             <nav className="min-h-16 h-16 flex items-center justify-between px-4 bg-brand">
                 <div className="flex md:hidden items-center gap-4">
-                    <SidebarTrigger className="w-auto"/>
+                    <SidebarTrigger className="w-auto text-white hover:text-white"/>
                     <h1 className="text-xl font-bold text-white">GEST - SENHAS</h1>
                 </div>
                 <div className="md:w-full h-full flex items-center md:justify-end gap-2 sm:gap-4">

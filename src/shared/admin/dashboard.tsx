@@ -1,37 +1,31 @@
 import { useContext, useEffect } from "react";
 import { GlobalContext } from "../../context/global-context";
-import { AuthContext } from "../../context/auth-context";
 import { Item, ItemDescription, ItemTitle } from "@/components/ui/item";
 
 const DashBoard = () => {
-    const { actCompany } = useContext(AuthContext)
-    const { getCountUser, getCountTicket, getCountService, getCountCounter, countUser, countService, countCounter, countTicket } = useContext(GlobalContext)
+    const { count, getCount } = useContext(GlobalContext)
 
     useEffect(() => {
-        if (actCompany) {
-            getCountUser(actCompany)
-            getCountService(actCompany)
-            getCountCounter(actCompany)
-            getCountTicket(actCompany)
-        }
-    }, [])
+        getCount()
+    }, [getCount])
+
     return (
         <div className="w-full grid grid-cols-1  sm:grid-cols-2 gap-4">
             <Item variant="outline" className="flex flex-col items-start p-4 gap-4">
-                <ItemTitle>{countUser}</ItemTitle>
-                <ItemDescription>Funcionários</ItemDescription>
+                <ItemTitle>{count?.users ?? 0}</ItemTitle>
+                <ItemDescription className="font-bold">Funcionários</ItemDescription>
             </Item>
             <Item variant="outline" className="flex flex-col items-start p-4 gap-4">
-                <ItemTitle>{countService}</ItemTitle>
-                <ItemDescription>Serviços</ItemDescription>
+                <ItemTitle>{count?.services ?? 0}</ItemTitle>
+                <ItemDescription className="font-bold">Serviços</ItemDescription>
             </Item>
             <Item variant="outline" className="flex flex-col items-start p-4 gap-4">
-                <ItemTitle>{countCounter}</ItemTitle>
-                <ItemDescription>Balcões</ItemDescription>
+                <ItemTitle>{count?.counters ?? 0}</ItemTitle>
+                <ItemDescription className="font-bold">Balcões</ItemDescription>
             </Item>
             <Item variant="outline" className="flex flex-col items-start p-4 gap-4">
-                <ItemTitle>{countTicket}</ItemTitle>
-                <ItemDescription>Ticket</ItemDescription>
+                <ItemTitle>{count?.tickets ?? 0}</ItemTitle>
+                <ItemDescription className="font-bold">Ticket</ItemDescription>
             </Item>
         </div>
     );

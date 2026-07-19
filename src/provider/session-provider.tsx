@@ -1,102 +1,79 @@
 import { useCallback, useEffect, useState } from "react"
-import { Api } from "../server/api"
+import authApi, { Api } from "../server/api"
 import { IUser } from "../interface/IUser"
-import ExtraProvider from "./extra-provider"
 import { useNavigate } from "react-router-dom"
-import { IUserAssistant } from "../interface/IUserAssistant"
 import { useAlert } from "./alert"
 import axios from "axios"
+import Cookies from "js-cookie"
 
 const SessionProvider = () => {
-    const { setTextAlert, setTypeAlert } = ExtraProvider()
-
     const { FailedAlert, SuccessAlert } = useAlert()
 
     const [user, setUser] = useState<IUser>()
-
-    const [actUser, setActUser] = useState<string | null>()
-    const [actUserAssistant, setActUserAssistant] = useState<IUserAssistant>()
-    const [actCompany, setActCompany] = useState<string | null>()
-
-    const [logado, setLogado] = useState<boolean>(false)
+    const [loading, setLoading] = useState(true)
 
     const navigate = useNavigate()
 
     /* USER DATA */
     const getUser = useCallback(async () => {
-        await Api.get(`user-show/${actUser}`)
-            .then((response) => {
-                setUser(response?.data)
-                setLogado(true)
-            })
-    }, [])
+        try {
+            const response = await authApi.get('user')
+            setUser(response.data)
 
-    /* USER ASSISTANT DATA */
-    const getUserAssistant = useCallback(async () => {
+            if (response.data.role == "SU" || response.data.role == "Admin") {
+                return navigate("/admin")
+            }
 
-        if (localStorage.getItem("actAssitant") && localStorage.getItem("actCounter")) {
-            await Api.get(`user-assistant-view/${localStorage.getItem("actAssitant")}/${localStorage.getItem("actCounter")}`)
-                .then((response) => {
-                    setActUserAssistant(response?.data)
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
+            return navigate("/counter")
+        } catch {
+            setUser(undefined)
+            return navigate("/sign-in")
         }
-        else {
-            navigate("/counter")
+        finally {
+            setLoading(false)
         }
-
-    }, [])
+    }, [navigate])
 
     /* SESSION LOAD */
     useEffect(() => {
-        if (!actUser) {
-            setActUser(localStorage.getItem("actUser"))
+        async function loadSession() {
+            const token = Cookies.get("gs-token");
+
+            if (token || !token) {
+                try {
+                    const response = await authApi.get('user')
+                    setUser(response.data)
+                } catch {
+                    setUser(undefined)
+                }
+                finally {
+                    setLoading(false)
+                }
+            } else {
+                setUser(undefined)
+                setLoading(false)
+            }
+
         }
 
-        if (actUser) {
-            loadUser()
-        }
-        else {
-            setLogado(false)
-        }
-
-        async function loadUser() {
-            await Api.get(`user-show/${actUser}`)
-                .then(response => {
-                    setUser(response?.data)
-                    setLogado(true)
-
-                    setActCompany(response?.data.id_company)
-                })
-                .catch(() => {
-                    setLogado(false)
-                })
-        }
-    }, [actUser])
+        loadSession()
+    }, [])
 
     /* SESSION LOGIN */
     const login = useCallback(async (email: string, password: string, setDisabledButton: (data: boolean) => void) => {
         setDisabledButton(true)
 
         try {
-            const response = await Api.post("user-signin", {
+            const response = await Api.post("login", {
                 email,
                 password
             })
 
-            localStorage.setItem("actUser", response?.data.user?.id)
-
-            setActUser(response?.data.user?.id)
+            Cookies.set("gs-token", response?.data.token)
 
             SuccessAlert(response?.data.message)
 
             getUser()
-
-            
-            return response?.data.user?.idType == "1" ? navigate("/admin") :
-            response?.data.user?.idType == "2" ? navigate("/counter") : ""
         }
         catch (e) {
             if (axios.isAxiosError(e)) {
@@ -106,34 +83,33 @@ const SessionProvider = () => {
                 FailedAlert("Erro inesperado")
             }
         }
-        finally{
+        finally {
             setDisabledButton(false)
         }
-    }, [getUser, setTextAlert, setTypeAlert, navigate])
+    }, [getUser, navigate])
 
     /* SESSION LOGOUT */
-    const logout = () => {
+    const logout = async () => {
         setUser(undefined)
-
-        setLogado(false)
-
-        localStorage.removeItem("actUser")
-
-        localStorage.removeItem("actAssitant")
-        localStorage.removeItem("actCounter")
+        setLoading(true)
+        try {
+            await authApi.post('user/out')
+            Cookies.remove("gs-token")
+            navigate("/sign-in")
+        }
+        catch (e) {
+            FailedAlert("Erro ao terminar sessão")
+        }
+        finally {
+            setLoading(false)
+        }
     }
 
     return {
-        logado,
         login,
         logout,
         user,
-        setUser,
-        actUser,
-        getUser,
-        actCompany,
-        getUserAssistant,
-        actUserAssistant
+        loading
     }
 }
 

@@ -1,62 +1,35 @@
 import { useCallback, useState } from "react"
-import { Api } from "../server/api"
-import { IDefault } from "../interface/IDefault"
+import authApi from "../server/api"
+import { IService } from "@/interface/IService"
 
 const ServiceProvider = () => {
-    /* SERVICE DATA */
-    const [ listService, setListService ] =  useState<IDefault[] | undefined>(undefined)
-    const [ countService, setCountService ] =  useState("")
+    const [listService, setListService] = useState<IService[]>()
 
-    const getListService = useCallback( async(actCompany: string) => {
-        setListService(undefined)
-        await Api.get(`service-view/${actCompany}`)
-        .then((response) =>{
+    const getListService = useCallback(async () => {
+        try {
+            const response = await authApi.get("service")
             setListService(response?.data)
-        })
-        .catch(erro =>{
-            console.log(erro)
-        })
+        }
+        catch (e) {
+            setListService(undefined)
+        }
     }, [])
 
-    const getListActiveService = useCallback( async(actCompany: string) => {
-        setListService(undefined)
-        await Api.get(`service-available/${actCompany}`)
-        .then((response) =>{
+    const getListActiveService = useCallback(async () => {
+        try {
+            const response = await authApi.get("service/active")
             setListService(response?.data)
-        })
-        .catch(erro =>{
-            console.log(erro)
-        })
-    }, [])
-
-    const getCountService = useCallback( async(actCompany: string) => {
-        await Api.get(`service-count/${actCompany}`)
-        .then((response) =>{
-            setCountService(response?.data)
-        })
-        .catch(erro =>{
-            console.log(erro)
-        })
-    }, [])
-
-    const getEachService = useCallback( async(id: string, setEachService: (data: IDefault) => void) => {
-        await Api.get(`service-show/${id}`)
-        .then((response) =>{
-            setEachService(response?.data)
-        })
-        .catch(erro =>{
-            console.log(erro)
-        })
+        }
+        catch (e) {
+            setListService(undefined)
+        }
     }, [])
 
     return {
         listService,
         getListService,
-        countService,
-        getCountService,
-        getEachService,
         getListActiveService
     }
 }
- 
+
 export default ServiceProvider;

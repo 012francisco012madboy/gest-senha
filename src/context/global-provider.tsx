@@ -4,6 +4,8 @@ import ServiceProvider from "../provider/service-provider"
 import CounterProvider from "../provider/counter-provider"
 import UserProvider from "../provider/user-provider"
 import TicketProvider from "../provider/ticket-provider"
+import ExtraProvider from "@/provider/extra-provider"
+import AssociateProvider from "@/provider/associate-provider"
 
 interface ContextProps{
   children: ReactNode
@@ -11,40 +13,41 @@ interface ContextProps{
 
 function GlobalProvider({children}: ContextProps){
   /* PROVIDER */
-  const { listUser, getListUser, countUser, getCountUser, getEachUser } = UserProvider()
-  const { listService, getListService, getListActiveService, countService, getCountService, getEachService } = ServiceProvider()
-  const { listCounter, getListCounter, getListCounterActive, countCounter, getCountCounter, getEachCounter } = CounterProvider()
-  const { actTicket, countTicket, getCountTicket, listTicket, listAllTicket, setActTicket, getActTicket, getListTicket, getListAllTicket, getListLastTicket } = TicketProvider()
+  const { voice, count, getCount } = ExtraProvider()
+  const { listUser, getListUser } = UserProvider()
+  const { listService, getListService, getListActiveService } = ServiceProvider()
+  const { listCounter, getListCounter, getListCounterActive } = CounterProvider()
+  const { listAssociate, getListAssociate } = AssociateProvider()
+  const { listTicket, getListTicket } = TicketProvider()
 
   return(
     <GlobalContext.Provider value={{
+      /* EXTRA */
+      count,
+      voice,
+      getCount,
+
       /* USER */
-      listUser, getListUser,
-      countUser, getCountUser,
-      getEachUser,
+      listUser,
+      getListUser,
 
       /* SERVIÇOS */
-      listService, getListService,
-      countService, getCountService,
-      getEachService,
+      listService,
+      getListService,
       getListActiveService,
 
       /* BALCÃO */
-      listCounter, getListCounter,
-      countCounter, getCountCounter,
-      getEachCounter, getListCounterActive,
+      listCounter,
+      getListCounter,
+      getListCounterActive,
+
+      /* ASSOCIATE */
+      listAssociate,
+      getListAssociate,
 
       /* TICKET */
-      actTicket,
-      countTicket,
       listTicket,
-      listAllTicket,
-      setActTicket,
-      getActTicket,
-      getCountTicket,
       getListTicket,
-      getListAllTicket,
-      getListLastTicket
     }}>
       {children}
     </GlobalContext.Provider>

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/auth-context";
 import { GlobalContext } from "../../context/global-context";
-import { Title } from "../other/extra";
+import { Title } from "../../components/title";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 const Sidebar = () => {

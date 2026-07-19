@@ -5,20 +5,18 @@ import { Field, FieldGroup, FieldLabel } from "../ui/field";
 import { InputGroup, InputGroupInput } from "../ui/input-group";
 import { GlobalContext } from "@/context/global-context";
 import { useAlert } from "@/provider/alert";
-import { Api } from "@/server/api";
+import authApi from "@/server/api";
 import axios from "axios";
-import { AuthContext } from "@/context/auth-context";
 import { IUser } from "@/interface/IUser";
 import { Spinner } from "../ui/spinner";
 
 interface modalProps {
-  employee: Omit<IUser, 'idType' | 'type' | 'id_state' | 'id_company'> | undefined
+  employee: Omit<IUser, 'role'> | undefined
   open: boolean;
   setOpen: (data: boolean) => void;
 }
 
 const EditEmployeeModal = ({ employee, open, setOpen }: modalProps) => {
-  const { actCompany } = useContext(AuthContext)
   const { getListUser } = useContext(GlobalContext)
 
   const { FailedAlert, SuccessAlert } = useAlert();
@@ -38,15 +36,18 @@ const EditEmployeeModal = ({ employee, open, setOpen }: modalProps) => {
   async function EditEmployee(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
-    if (name == "" && email == "") {
+    if (name == "" || email == "") {
       return FailedAlert("Preencha todos campos")
     }
 
     setDisabledButton(true)
 
     if (employee) {
+      const id = employee.id
+      
       try {
-        const response = await Api.put(`user-update/${employee.id}`, {
+        const response = await authApi.patch("user", {
+          id,
           name,
           email
         })
@@ -57,7 +58,7 @@ const EditEmployeeModal = ({ employee, open, setOpen }: modalProps) => {
 
         setOpen(false)
 
-        actCompany && getListUser(actCompany)
+        getListUser()
       }
       catch (e) {
         if (axios.isAxiosError(e)) {
@@ -117,7 +118,7 @@ const EditEmployeeModal = ({ employee, open, setOpen }: modalProps) => {
                 className="w-full"
                 variant="primary"
               >
-                { disabledButton ? <Spinner /> : "Atualizar" }
+                {disabledButton ? <Spinner /> : "Atualizar"}
               </Button>
             </Field>
           </FieldGroup>

@@ -10,10 +10,11 @@ import DashBoard from "../shared/admin/dashboard";
 import ListEmp from "../shared/admin/list-emp";
 import ListService from "../shared/admin/list-service";
 import ListCounter from "../shared/admin/list-counter";
-import ListSession from "../shared/admin/list-session";
 import { Fragment, ReactNode, useContext } from "react";
 import { AuthContext } from "../context/auth-context";
 import AdminLayout from "@/layout/admin";
+import Loading from "@/page/init/loading";
+import ListAssociate from "@/shared/admin/list-associate";
 
 interface itemProps{
     children: ReactNode
@@ -21,9 +22,17 @@ interface itemProps{
 }
 
 function PrivateRoute({children, permited}: itemProps){
-    const { logado, user } = useContext(AuthContext)
+    const { user, loading } = useContext(AuthContext)
 
-    if(!logado){
+    if(loading){
+        return (
+            <Fragment>
+                <Loading/>
+            </Fragment>
+        )
+    }
+
+    if(!user){
         return (
             <Fragment>
                 <SignIn/>
@@ -31,7 +40,7 @@ function PrivateRoute({children, permited}: itemProps){
         )
     }
      
-    if(user?.idType && !permited.includes(String(user.idType))){
+    if(user?.role && !permited.includes(String(user.role))){
          return (
             <Fragment>
                 <SignIn/>
@@ -49,23 +58,25 @@ function PrivateRoute({children, permited}: itemProps){
 const Rotas = () => {
     return (
         <Routes>
+            <Route path='*' element={<SignIn/>}/>
+
             <Route path='/sign-in' element={<SignIn/>}/>
 
             <Route path='/' element={<Init/>}/>
             <Route path='/view' element={<View/>}/>
             <Route path='/client' element={<Client/>}/>
             
-            <Route path="" element={<PrivateRoute children={<Render/>} permited={["1", "2"]}/>}>
+            <Route path="" element={<PrivateRoute children={<Render/>} permited={["SU", "Admin", "Atendente"]}/>}>
                 <Route path='/counter' element={<Counter/>}/>
                 <Route path='/employee' element={<Emp/>}/>
             </Route>
 
-            <Route path="/admin" element={<PrivateRoute children={<Render/>} permited={["1"]}/>}>
+            <Route path="/admin" element={<PrivateRoute children={<Render/>} permited={["SU", "Admin"]}/>}>
                 <Route path="" element={<AdminLayout children={<DashBoard/>}/>}/>
                 <Route path="list-employee" element={<AdminLayout children={<ListEmp/>}/>}/>
                 <Route path="list-service" element={<AdminLayout children={<ListService/>}/>}/>
                 <Route path="list-counter" element={<AdminLayout children={<ListCounter/>}/>}/>
-                <Route path="list-session" element={<AdminLayout children={<ListSession/>}/>}/>
+                <Route path="list-associate" element={<AdminLayout children={<ListAssociate/>}/>}/>
             </Route>
         </Routes>
      );

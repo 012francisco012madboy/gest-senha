@@ -1,8 +1,7 @@
 import { Fragment, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/auth-context";
 import { GlobalContext } from "../../context/global-context";
-import { Title } from "../../shared/other/extra";
+import { Title } from "../../components/title";
 import { Api } from "../../server/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Item, ItemActions, ItemContent, ItemTitle } from "@/components/ui/item";
@@ -11,34 +10,28 @@ import { useAlert } from "@/provider/alert";
 import axios from "axios";
 
 const Counter = () => {
-    const { actCompany, user } = useContext(AuthContext)
     const { getListCounterActive, listCounter } = useContext(GlobalContext)
 
     const { FailedAlert, SuccessAlert } = useAlert()
 
-    useEffect(() => {
-        actCompany && getListCounterActive(actCompany)
-    }, [actCompany, getListCounterActive])
-
     const navigate = useNavigate()
+
+    useEffect(() => {
+        getListCounterActive()
+    }, [getListCounterActive])
 
     async function saveSelectCounter(counter: string) {
         if (counter == "") {
-            FailedAlert("Nenhum balcão selecionado")
+            return FailedAlert("Nenhum balcão selecionado")
         }
-        const id_user = user?.id
         const id_front_desk = counter
 
         try {
             const response = await Api.post("user-assistant-add", {
-                id_user,
                 id_front_desk
             })
 
             SuccessAlert(response?.data.message)
-
-            user && localStorage.setItem("actAssitant", user?.id)
-            localStorage.setItem("actCounter", counter)
 
             navigate("/employee")
         } catch (e) {
@@ -68,10 +61,10 @@ const Counter = () => {
                                 <Fragment>
                                     {
                                         listCounter?.map((each, i) => (
-                                            <div key={i} onClick={() => saveSelectCounter(each.id_front_desk)}>
+                                            <div key={i} onClick={() => saveSelectCounter(each.id)}>
                                                 <Item variant="outline">
                                                     <ItemContent>
-                                                        <ItemTitle>Balcão {each.ref}</ItemTitle>
+                                                        <ItemTitle>Balcão {each.reference}</ItemTitle>
                                                     </ItemContent>
                                                     <ItemActions>
                                                         <ChevronRight className="size-6" />

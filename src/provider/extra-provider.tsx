@@ -1,19 +1,22 @@
-import { useState } from "react"
-import { IDefault } from "../interface/IDefault"
+import { ICount } from "@/interface/ICount"
+import authApi from "@/server/api"
+import { useCallback, useState } from "react"
 
 const ExtraProvider = () => {
-    /* DEFAULT */
-    const [name_company, setNameCompany] = useState("")
-    const [email_company, setEmailCompany] = useState("")
-    const [counter, setCounter] = useState<IDefault>({id: "", name: ""})
-    const [textAlert, setTextAlert] = useState("")
-    const [textQuestion, setTextQuestion] = useState("")
-    const [typeAlert, setTypeAlert] = useState<boolean>(true)
-    const [showModal, setShowModal] = useState<string | null>(null)
+    const [count, setCount] = useState<ICount>()
 
-    function voice(ticket: string, counter: string){
-        if("speechSynthesis" in window){
-            const text = `A seguir, Senha ${ticket}. Balcão ${counter}.`
+    const getCount = useCallback(async () => {
+        try {
+            const response = await authApi.get("count");
+            setCount(response.data);
+        } catch (error) {
+            setCount(undefined);
+        }
+    }, [])
+
+    function voice(ticket: string, counter: string) {
+        if ("speechSynthesis" in window) {
+            const text = `A seguir... Senha ${ticket}... Balcão ${counter}.`
 
             const value = new SpeechSynthesisUtterance(text)
 
@@ -23,20 +26,8 @@ const ExtraProvider = () => {
 
     return {
         voice,
-        counter,
-        setCounter,
-        textAlert,
-        setTextAlert,
-        textQuestion,
-        setTextQuestion,
-        typeAlert,
-        setTypeAlert,
-        showModal,
-        setShowModal,
-        name_company,
-        setNameCompany,
-        email_company,
-        setEmailCompany
+        count,
+        getCount
     }
 }
 

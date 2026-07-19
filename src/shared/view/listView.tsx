@@ -1,37 +1,29 @@
 import { useContext, useEffect } from "react";
-import { Title } from "../other/extra";
-import { AuthContext } from "../../context/auth-context";
+import { Title } from "../../components/title";
 import { GlobalContext } from "../../context/global-context";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
 import ApiEcho from "@/server/echo";
 
 const ListView = () => {
-    const { actCompany } = useContext(AuthContext)
-    const { getListAllTicket, listAllTicket } = useContext(GlobalContext)
+    const { listTicket, getListTicket } = useContext(GlobalContext)
 
     useEffect(() => {
-        actCompany && getListAllTicket(actCompany)
-    }, [actCompany, getListAllTicket])
+        getListTicket()
+    }, [getListTicket])
 
     useEffect(() => {
-        if (!actCompany) return
-
-        // carga inicial
-        getListAllTicket(actCompany)
+        getListTicket()
 
         const channel = ApiEcho.channel(`tickets`)
         
         channel.listen("TicketCreated", () => {
-
-            // Atualiza a lista chamando sua API
-            getListAllTicket(actCompany);
-
+            getListTicket();
         });
 
         return () => {
             ApiEcho.leave("tickets");
         };
-    }, [actCompany, getListAllTicket])
+    }, [getListTicket])
 
     return (
         <div className="w-full h-full flex flex-col gap-4 px-4 overflow-x-auto">
@@ -41,17 +33,15 @@ const ListView = () => {
                     <TableRow>
                         <TableHead>Senha</TableHead>
                         <TableHead>Serviço</TableHead>
-                        <TableHead>Balcão</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {
-                        listAllTicket &&
-                        listAllTicket?.map((each, i) => (
+                        listTicket &&
+                        listTicket?.map((each, i) => (
                             <TableRow key={i}>
-                                <TableCell>{each.ref}</TableCell>
+                                <TableCell>{each.reference}</TableCell>
                                 <TableCell>{each.service}</TableCell>
-                                <TableCell>Em espera</TableCell>
                             </TableRow>
                         ))
                     }

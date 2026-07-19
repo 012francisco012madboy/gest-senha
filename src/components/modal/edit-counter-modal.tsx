@@ -8,48 +8,45 @@ import { useAlert } from "@/provider/alert";
 import authApi from "@/server/api";
 import axios from "axios";
 import { Spinner } from "../ui/spinner";
-import { IService } from "@/interface/IService";
+import { ICounter } from "@/interface/ICounter";
 
 interface modalProps {
-  service: IService | undefined
+  counter: ICounter | undefined
   open: boolean;
   setOpen: (data: boolean) => void;
 }
 
-const EditServiceModal = ({ service, open, setOpen }: modalProps) => {
-  const { getListService } = useContext(GlobalContext)
+const EditCounterModal = ({ counter, open, setOpen }: modalProps) => {
+  const { getListCounter } = useContext(GlobalContext)
 
   const { FailedAlert, SuccessAlert } = useAlert();
 
   const [disabledButton, setDisabledButton] = useState(false);
 
-  const [name, setName] = useState("")
-  const [prefix, setPrefix] = useState("")
+  const [reference, setReference] = useState("")
 
   useEffect(() => {
-    if (service) {
-      setName(service.name)
-      setPrefix(service.prefix)
+    if (counter) {
+      setReference(counter.reference)
     }
-  }, [service])
+  }, [counter])
 
   async function addService(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
-    if (name == "" || prefix == "") {
-      return FailedAlert("Preencha todos campos")
+    if (reference == "") {
+      return FailedAlert("Preencha a referência do balcão")
     }
 
     setDisabledButton(true)
 
-    if (service) {
-      const id = service.id
+    if (counter) {
+      const id = counter.id
 
       try {
-        const response = await authApi.patch("service", {
+        const response = await authApi.patch("counter", {
           id,
-          name,
-          prefix
+          reference
         })
 
         SuccessAlert(response?.data.message)
@@ -58,7 +55,7 @@ const EditServiceModal = ({ service, open, setOpen }: modalProps) => {
 
         setOpen(false)
 
-        getListService()
+        getListCounter()
       }
       catch (e) {
         if (axios.isAxiosError(e)) {
@@ -75,39 +72,26 @@ const EditServiceModal = ({ service, open, setOpen }: modalProps) => {
   }
 
   function cleanInput() {
-    setName("")
-    setPrefix("")
+    setReference("")
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Editar serviço</DialogTitle>
+          <DialogTitle>Editar balcão</DialogTitle>
         </DialogHeader>
         <form onSubmit={(e) => addService(e)}>
           <FieldGroup>
             <Field>
-              <FieldLabel>Serviço</FieldLabel>
+              <FieldLabel>Referência (A-Z ou 1-9)</FieldLabel>
               <InputGroup>
                 <InputGroupInput
-                  value={name}
+                  value={reference}
                   required
                   type="text"
-                  placeholder="Digite o nome do serviço"
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </InputGroup>
-            </Field>
-            <Field>
-              <FieldLabel>Abreviação</FieldLabel>
-              <InputGroup>
-                <InputGroupInput
-                  value={prefix}
-                  required
-                  type="text"
-                  placeholder="Digite a abreviação do serviço"
-                  onChange={(e) => setPrefix(e.target.value)}
+                  placeholder="Digite a refrência do balcão"
+                  onChange={(e) => setReference(e.target.value)}
                 />
               </InputGroup>
             </Field>
@@ -128,4 +112,4 @@ const EditServiceModal = ({ service, open, setOpen }: modalProps) => {
   );
 };
 
-export default EditServiceModal;
+export default EditCounterModal;

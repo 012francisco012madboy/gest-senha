@@ -6,9 +6,8 @@ import { InputGroup, InputGroupInput } from "../ui/input-group";
 import { GlobalContext } from "@/context/global-context";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { useAlert } from "@/provider/alert";
-import { Api } from "@/server/api";
+import authApi from "@/server/api";
 import axios from "axios";
-import { AuthContext } from "@/context/auth-context";
 import { Spinner } from "../ui/spinner";
 
 interface modalProps {
@@ -17,7 +16,6 @@ interface modalProps {
 }
 
 const AddEmployeeModal = ({ open, setOpen }: modalProps) => {
-  const { actCompany } = useContext(AuthContext)
   const { getListUser } = useContext(GlobalContext)
 
   const { FailedAlert, SuccessAlert } = useAlert();
@@ -26,24 +24,34 @@ const AddEmployeeModal = ({ open, setOpen }: modalProps) => {
 
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
-  const [idType, setIdType] = useState("")
-  const id_company = actCompany
+  const [password, setPassword] = useState("")
+  const [passwordConfirm, setPasswordConfirm] = useState("")
+  const [idRole, setIdRole] = useState("")
 
   async function addEmployee(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
-    if (name == "" && email == "" && idType == "") {
+    if (name == "" || email == "" || password == "" || passwordConfirm == "") {
       return FailedAlert("Preencha todos campos")
+    }
+
+    if (password != passwordConfirm) {
+      return FailedAlert("As senhas não coincidem")
+    }
+
+    if (idRole != "2" && idRole != "3") {
+      return FailedAlert("Selecione a permissão")
     }
 
     setDisabledButton(true)
 
     try {
-      const response = await Api.post("user-add", {
+      const response = await authApi.post("user", {
         name,
         email,
-        idType,
-        id_company
+        idRole,
+        password,
+        passwordConfirm
       })
 
       SuccessAlert(response?.data.message)
@@ -52,7 +60,7 @@ const AddEmployeeModal = ({ open, setOpen }: modalProps) => {
 
       setOpen(false)
 
-      actCompany && getListUser(actCompany)
+      getListUser()
     }
     catch (e) {
       if (axios.isAxiosError(e)) {
@@ -70,14 +78,14 @@ const AddEmployeeModal = ({ open, setOpen }: modalProps) => {
   function cleanInput() {
     setName("")
     setEmail("")
-    setIdType("-1")
+    setIdRole("")
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Adicionar funcionário</DialogTitle>
+          <DialogTitle>Adicionar usuário</DialogTitle>
         </DialogHeader>
         <form onSubmit={(e) => addEmployee(e)}>
           <FieldGroup>
@@ -103,9 +111,31 @@ const AddEmployeeModal = ({ open, setOpen }: modalProps) => {
                 />
               </InputGroup>
             </Field>
+            <Field>
+              <FieldLabel>Password</FieldLabel>
+              <InputGroup>
+                <InputGroupInput
+                  required
+                  type="password"
+                  placeholder="Digite a senha"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </InputGroup>
+            </Field>
+            <Field>
+              <FieldLabel>Confirmar password</FieldLabel>
+              <InputGroup>
+                <InputGroupInput
+                  required
+                  type="password"
+                  placeholder="Confirme a senha"
+                  onChange={(e) => setPasswordConfirm(e.target.value)}
+                />
+              </InputGroup>
+            </Field>
             <Select
-              value={idType}
-              onValueChange={setIdType}
+              value={idRole}
+              onValueChange={setIdRole}
             >
               <Field>
                 <FieldLabel>Permissão</FieldLabel>
@@ -116,8 +146,8 @@ const AddEmployeeModal = ({ open, setOpen }: modalProps) => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="2">Funcionário</SelectItem>
-                    <SelectItem value="1">Administrador</SelectItem>
+                    <SelectItem value="3">Atendente</SelectItem>
+                    <SelectItem value="2">Administrador</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Field>

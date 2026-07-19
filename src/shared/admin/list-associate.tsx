@@ -5,39 +5,39 @@ import authApi from "../../server/api";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Plus } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAlert } from "@/provider/alert";
 import axios from "axios";
-import AddCounterModal from "@/components/modal/add-counter-modal";
-import EditCounterModal from "@/components/modal/edit-counter-modal";
-import { ICounter } from "@/interface/ICounter";
+import { toast } from "sonner";
+import AddAssociateModal from "@/components/modal/add-associate-modal";
 
-const ListCounter = () => {
-    const { listCounter, getListCounter } = useContext(GlobalContext)
-    const { FailedAlert, SuccessAlert} = useAlert()
-    
-    const [counter, setCounter] = useState<ICounter>()
+const ListAssociate = () => {
+    const { listAssociate, getListAssociate } = useContext(GlobalContext)
 
-    const [openAddCounter, setOpenAddCounter] = useState(false)
-    const [openEditCounter, setOpenEditCounter] = useState(false)
+    const { FailedAlert, SuccessAlert } = useAlert()
+
+    const [openAddAssociate, setOpenAddAssociate] = useState(false)
 
     useEffect(() => {
-        getListCounter()
-    }, [getListCounter])
-    
-    function handleEditCounter(each: ICounter) {
-        setCounter(each);
+        getListAssociate()
+    }, [getListAssociate])
 
-        setOpenEditCounter(true);
-    }
+    async function destroyAssociate(id: string) {
+        if (id == "") {
+            return FailedAlert("Nenhuma associação selecionada")
+        }
 
-    async function destroyCounter(id: string) {
         try {
-            const response = await authApi.delete(`counter/${id}`)
-            
-            SuccessAlert(response?.data.message)
-
-            getListCounter()
+            toast.promise(authApi.delete(`counter/service/${id}`),
+                {
+                    loading: "Desassociando",
+                    success: (res) => {
+                        SuccessAlert(res?.data.message)
+                        getListAssociate()
+                    },
+                    error: (e) => e?.response?.data.message || "Erro inesperado"
+                }
+            )
         }
         catch (e) {
             if (axios.isAxiosError(e)) {
@@ -51,40 +51,36 @@ const ListCounter = () => {
 
     return (
         <Fragment>
-            {openAddCounter && <AddCounterModal open={openAddCounter} setOpen={setOpenAddCounter}/>}
-            {openEditCounter && <EditCounterModal counter={counter} open={openEditCounter} setOpen={setOpenEditCounter}/>}
+            {openAddAssociate && <AddAssociateModal open={openAddAssociate} setOpen={setOpenAddAssociate} />}
             <div className="w-full h-full flex flex-col gap-4 sm:gap-8 overflow-x-auto">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-bold text-xl text-brand-secondary">Balcões</h2>
-                    <Button type="button" variant="primary" onClick={() => setOpenAddCounter(true)}>
+                    <h2 className="font-bold text-xl text-brand-secondary">Serviços</h2>
+                    <Button type="button" variant="primary" onClick={() => setOpenAddAssociate(true)}>
                         <Plus /> Adicionar
                     </Button>
                 </div>
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Referência</TableHead>
+                            <TableHead>Balcão</TableHead>
+                            <TableHead>Serviço</TableHead>
                             <TableHead>Ações</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {
-                            listCounter?.map((each, i) => (
+                            listAssociate?.map((each, i) => (
                                 <TableRow key={i}>
                                     <TableCell>{each.reference}</TableCell>
+                                    <TableCell>{each.service}</TableCell>
                                     <TableCell>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger>
                                                 <MoreHorizontal className="text-companion" />
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
-                                                <DropdownMenuSeparator />
-                                                <DropdownMenuItem onClick={() => handleEditCounter(each)}>
-                                                    Editar
-                                                </DropdownMenuItem>
-                                                <DropdownMenuSeparator />
-                                                <DropdownMenuItem variant="destructive" onClick={() => destroyCounter(each.id)}>
-                                                    Eliminar
+                                                <DropdownMenuItem variant="destructive" onClick={() => destroyAssociate(each.id)}>
+                                                    Desassociar
                                                 </DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
@@ -99,4 +95,4 @@ const ListCounter = () => {
     );
 }
 
-export default ListCounter;
+export default ListAssociate;

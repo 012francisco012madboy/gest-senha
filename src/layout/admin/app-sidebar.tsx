@@ -13,9 +13,7 @@ export function AppSidebar() {
     return (
         <Sidebar>
             <SidebarHeader className="w-64 h-16 flex flex-row items-center justify-between bg-brand">
-                <Link to="/">
-                    <h1 className="text-xl font-bold text-white">GEST - SENHAS</h1>
-                </Link>
+                <h1 className="text-xl font-bold text-white">GEST - SENHAS</h1>
             </SidebarHeader>
             <div className="w-full px-4">
                 <Separator />
@@ -33,7 +31,7 @@ export function AppSidebar() {
                         <SidebarMenuItem>
                             <SidebarMenuButton size="lg" className={location.pathname === "/admin/list-employee" ? "bg-brand/25" : undefined} asChild>
                                 <Link to="/admin/list-employee" onClick={isMobile ? toggleSidebar : undefined}>
-                                    Funcionários
+                                    Usuários
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -48,6 +46,13 @@ export function AppSidebar() {
                             <SidebarMenuButton size="lg" className={location.pathname === "/admin/list-counter" ? "bg-brand/25" : undefined} asChild>
                                 <Link to="/admin/list-counter" onClick={isMobile ? toggleSidebar : undefined}>
                                     Balcões
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton size="lg" className={location.pathname === "/admin/list-associate" ? "bg-brand/25" : undefined} asChild>
+                                <Link to="/admin/list-associate" onClick={isMobile ? toggleSidebar : undefined}>
+                                    Associados
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>

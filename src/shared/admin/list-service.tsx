@@ -1,8 +1,7 @@
 import { Fragment } from "react/jsx-runtime";
 import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../../context/global-context";
-import { AuthContext } from "../../context/auth-context";
-import { Api } from "../../server/api";
+import authApi from "../../server/api";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Plus } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -11,25 +10,24 @@ import { useAlert } from "@/provider/alert";
 import axios from "axios";
 import { toast } from "sonner";
 import AddServiceModal from "@/components/modal/add-service-modal";
-import { IDefault } from "@/interface/IDefault";
 import EditServiceModal from "@/components/modal/edit-service-modal";
+import { IService } from "@/interface/IService";
 
 const ListService = () => {
-    const { actCompany } = useContext(AuthContext)
     const { listService, getListService } = useContext(GlobalContext)
 
     const { FailedAlert, SuccessAlert } = useAlert()
 
-    const [service, setService] = useState<IDefault>()
+    const [service, setService] = useState<IService>()
 
     const [openAddService, setOpenAddService] = useState(false)
     const [openEditService, setOpenEditService] = useState(false)
 
     useEffect(() => {
-        actCompany && getListService(actCompany)
-    }, [getListService, actCompany])
+        getListService()
+    }, [getListService])
 
-    function handleEditService(each: IDefault) {
+    function handleEditService(each: IService) {
         setService(each);
 
         setOpenEditService(true);
@@ -41,12 +39,12 @@ const ListService = () => {
         }
 
         try {
-            toast.promise(Api.put(`/service-destroy/${id}`),
+            toast.promise(authApi.delete(`service/${id}`),
                 {
                     loading: "Eliminando",
                     success: (res) => {
                         SuccessAlert(res?.data.message)
-                        actCompany && getListService(actCompany)
+                        getListService()
                     },
                     error: (e) => e?.response?.data.message || "Erro inesperado"
                 }
@@ -64,8 +62,8 @@ const ListService = () => {
 
     return (
         <Fragment>
-            <AddServiceModal open={openAddService} setOpen={setOpenAddService} />
-            <EditServiceModal service={service} open={openEditService} setOpen={setOpenEditService} />
+            {openAddService && <AddServiceModal open={openAddService} setOpen={setOpenAddService} />}
+            {openEditService && <EditServiceModal service={service} open={openEditService} setOpen={setOpenEditService} />}
             <div className="w-full h-full flex flex-col gap-4 sm:gap-8 overflow-x-auto">
                 <div className="flex items-center justify-between">
                     <h2 className="font-bold text-xl text-brand-secondary">Serviços</h2>
@@ -76,8 +74,8 @@ const ListService = () => {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>ID</TableHead>
                             <TableHead>Nome</TableHead>
+                            <TableHead>Abreviação</TableHead>
                             <TableHead>Ações</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -85,8 +83,8 @@ const ListService = () => {
                         {
                             listService?.map((each, i) => (
                                 <TableRow key={i}>
-                                    <TableCell>{each.id}</TableCell>
                                     <TableCell>{each.name}</TableCell>
+                                    <TableCell>{each.prefix}</TableCell>
                                     <TableCell>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger>

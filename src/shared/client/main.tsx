@@ -1,8 +1,7 @@
 import { Fragment, useContext, useEffect, useState } from "react";
-import { Title } from "../other/extra";
+import { Title } from "../../components/title";
 import { GlobalContext } from "../../context/global-context";
-import { AuthContext } from "../../context/auth-context";
-import { Api } from "../../server/api";
+import authApi from "../../server/api";
 import { Item, ItemActions, ItemContent, ItemTitle } from "../../components/ui/item";
 import { ChevronRight } from "lucide-react";
 import { Button } from "../../components/ui/button";
@@ -12,33 +11,33 @@ import { Spinner } from "@/components/ui/spinner";
 import { useAlert } from "@/provider/alert";
 
 const Main = () => {
-    const { actCompany } = useContext(AuthContext)
     const { getListActiveService, listService } = useContext(GlobalContext)
 
     const { FailedAlert, SuccessAlert } = useAlert()
 
-    const [service, setService] = useState("")
+    const [service_id, setService_id] = useState("")
 
     const [disabledButton, setDisabledButton] = useState(false)
 
     useEffect(() => {
-        actCompany && getListActiveService(actCompany)
-    }, [actCompany, getListActiveService])
+        getListActiveService()
+    }, [getListActiveService])
 
     async function handleTicket() {
-        if (!service) {
-            return console.log("Nenhum serviço selecionado")
+        if (!service_id) {
+            return FailedAlert("Nenhum serviço selecionado")
         }
 
         setDisabledButton(true)
 
         try {
-            const response = await Api.post("/ticket-add", {
-                service,
-                actCompany
+            const response = await authApi.post("ticket", {
+                service_id
             })
 
-            SuccessAlert("A tua senha é: " + response?.data.ref)
+            setService_id("")
+
+            SuccessAlert("A tua senha é: " + response?.data.ticket)
         }
         catch (e) {
             if (axios.isAxiosError(e)) {
@@ -51,6 +50,10 @@ const Main = () => {
         finally {
             setDisabledButton(false)
         }
+    }
+
+    function handleSelectService(id: string){
+        setService_id(e => e != id ? id : "")
     }
 
     return (
@@ -70,8 +73,8 @@ const Main = () => {
                                 <Fragment>
                                     {
                                         listService?.map((each, i) => (
-                                            <div key={i} onClick={() => setService(each.id)}>
-                                                <Item variant="outline" className={`${service == each.id && "bg-gray-50"}`}>
+                                            <div key={i} onClick={() => handleSelectService(each.id)}>
+                                                <Item variant="outline" className={`${service_id == each.id && "bg-gray-100"}`}>
                                                     <ItemContent>
                                                         <ItemTitle>{each.name}</ItemTitle>
                                                     </ItemContent>

@@ -1,7 +1,6 @@
 import { Fragment, useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../../context/global-context";
-import { AuthContext } from "../../context/auth-context";
-import { Api } from "../../server/api";
+import authApi from "../../server/api";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Plus } from "lucide-react";
@@ -14,21 +13,20 @@ import { IUser } from "@/interface/IUser";
 import { toast } from "sonner";
 
 const ListEmp = () => {
-    const { actCompany } = useContext(AuthContext)
     const { getListUser, listUser } = useContext(GlobalContext)
 
     const { FailedAlert, SuccessAlert } = useAlert()
 
-    const [employee, setEmployee] = useState<Omit<IUser, 'idType' | 'type' | 'id_state' | 'id_company'>>();
+    const [employee, setEmployee] = useState<Omit<IUser, 'role'>>();
 
     const [openAddEmployee, setOpenAddEmployee] = useState(false)
     const [openEditEmployee, setOpenEditEmployee] = useState(false)
 
     useEffect(() => {
-        actCompany && getListUser(actCompany)
-    }, [getListUser, actCompany])
+        getListUser()
+    }, [getListUser])
 
-    function handleEditEmployee(each: Omit<IUser, 'idType' | 'type' | 'id_state' | 'id_company'>) {
+    function handleEditEmployee(each: Omit<IUser, 'role'>) {
         setEmployee(each);
 
         setOpenEditEmployee(true);
@@ -40,12 +38,12 @@ const ListEmp = () => {
         }
 
         try {
-            toast.promise(Api.put(`user-destroy/${id}`),
+            toast.promise(authApi.delete(`user/${id}`),
                 {
                     loading: "Eliminando",
                     success: (res) => {
                         SuccessAlert(res?.data.message)
-                        actCompany && getListUser(actCompany)
+                        getListUser()
                     },
                     error: (e) => e?.response?.data.message || "Erro inesperado"
                 }
@@ -79,11 +77,11 @@ const ListEmp = () => {
 
     return (
         <Fragment>
-            <AddEmployeeModal open={openAddEmployee} setOpen={setOpenAddEmployee} />
-            <EditEmployeeModal employee={employee} open={openEditEmployee} setOpen={setOpenEditEmployee} />
+            {openAddEmployee && <AddEmployeeModal open={openAddEmployee} setOpen={setOpenAddEmployee} />}
+            {openEditEmployee && <EditEmployeeModal employee={employee} open={openEditEmployee} setOpen={setOpenEditEmployee} />}
             <div className="w-full h-full flex flex-col gap-4 sm:gap-8 overflow-x-auto">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-bold text-xl text-brand-secondary">Funcionários</h2>
+                    <h2 className="font-bold text-xl text-brand-secondary">Usuários</h2>
                     <Button type="button" variant="primary" onClick={() => setOpenAddEmployee(true)}>
                         <Plus /> Adicionar
                     </Button>
@@ -91,7 +89,6 @@ const ListEmp = () => {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>ID</TableHead>
                             <TableHead>Nome</TableHead>
                             <TableHead>Email</TableHead>
                             <TableHead>Permissões</TableHead>
@@ -102,10 +99,9 @@ const ListEmp = () => {
                         {
                             listUser?.map((each, i) => (
                                 <TableRow key={i}>
-                                    <TableCell>{each.id}</TableCell>
                                     <TableCell>{each.name}</TableCell>
                                     <TableCell>{each.email}</TableCell>
-                                    <TableCell>{each.type}</TableCell>
+                                    <TableCell>{each.role}</TableCell>
                                     <TableCell className="text-right">
                                         <DropdownMenu>
                                             <DropdownMenuTrigger>
