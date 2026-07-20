@@ -22,7 +22,9 @@ interface GlobalContextData{
   getListActiveService: () => void
   
   /* BALCÃO */
+  counterOpen: ICounter | undefined
   listCounter: ICounter[] | undefined
+  getCounterOpen: () => void
   getListCounter: () => void
   getListCounterActive: () => void
   
@@ -31,8 +33,14 @@ interface GlobalContextData{
   getListAssociate: () => void
   
   /* TICKET */
+  lastTicket: ITicket | undefined
   listTicket: ITicket[] | undefined
+  listCounterTicket: ITicket[] | undefined
+  setLastTicket: (data: ITicket | undefined) => void
+  getNextTicket: () => void
+  getLastTicket: () => void
   getListTicket: () => void
+  getListCounterTicket: () => void
 }
 
 export const GlobalContext = createContext({} as GlobalContextData)

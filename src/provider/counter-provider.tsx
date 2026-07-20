@@ -3,6 +3,7 @@ import authApi from "../server/api"
 import { ICounter } from "../interface/ICounter"
 
 const CounterProvider = () => {
+    const [counterOpen, setCounterOpen] = useState<ICounter>()
     const [listCounter, setListCounter] = useState<ICounter[]>()
 
     const getListCounter = useCallback(async () => {
@@ -25,8 +26,20 @@ const CounterProvider = () => {
         }
     }, [])
 
+    const getCounterOpen = useCallback(async () => {
+        try {
+            const response = await authApi.get("user/active")
+            setCounterOpen(response?.data)
+        }
+        catch (e) {
+            setCounterOpen(undefined)
+        }
+    }, [])
+
     return {
+        counterOpen,
         listCounter,
+        getCounterOpen,
         getListCounter,
         getListCounterActive
     }

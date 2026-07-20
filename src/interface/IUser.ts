@@ -3,4 +3,5 @@ export interface IUser{
      name: string
      email: string
      role: string
+     current_counter: boolean
 }

@@ -7,13 +7,16 @@ interface ContextProps {
 }
 
 function AuthProvider({ children }: ContextProps) {
-  const { login, logout, user, loading } = SessionProvider()
+  const { login, logout, loadUser, setUser, user, logado, loading } = SessionProvider()
 
   return (
     <AuthContext.Provider value={{
       login,
       logout,
+      loadUser,
+      setUser,
       user,
+      logado,
       loading
     }}>
       {children}

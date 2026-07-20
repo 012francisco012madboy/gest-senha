@@ -1,38 +1,28 @@
 import Sidebar from "./sidebar";
-import { useContext, useEffect } from "react";
-import { AuthContext } from "../../context/auth-context";
+import { useContext } from "react";
 import { GlobalContext } from "../../context/global-context";
-import { Api } from "../../server/api";
+import authApi from "../../server/api";
 import { Button } from "@/components/ui/button";
 import { BellRing, Check, CornerUpLeft, CornerUpRight, X } from "lucide-react";
 import { useAlert } from "@/provider/alert";
 import axios from "axios";
 
 const Center = () => {
-    const { actCompany, actUserAssistant, voice } = useContext(AuthContext)
-    const { actTicket, setActTicket, getActTicket, getListTicket } = useContext(GlobalContext)
+    const { lastTicket, setLastTicket, voice } = useContext(GlobalContext)
 
     const { FailedAlert, SuccessAlert } = useAlert()
 
-    useEffect(() => {
-        actUserAssistant && getActTicket(actUserAssistant?.id_assistant)
-    }, [actUserAssistant, getActTicket])
-
-    async function handleFinished(state: string) {
-        if (!actTicket || !state) {
-            return FailedAlert("Erro de operação com a senha")
+    async function handleFinished() {
+        if (!lastTicket) {
+            return FailedAlert("Nenhuma senha em atendimento")
         }
 
         try {
-            const response = await Api.put(`/ticket-call-finished/${actTicket.id_ref}`, {
-                state
-            })
+            const response = await authApi.patch("ticket/finish")
 
             SuccessAlert(response?.data.message)
 
-            setActTicket(undefined)
-
-            actUserAssistant && actCompany && getListTicket(actUserAssistant?.id_service, actCompany)
+            setLastTicket(undefined)
         }
         catch (e) {
             if (axios.isAxiosError(e)) {
@@ -45,31 +35,35 @@ const Center = () => {
     }
 
     function handleVoice() {
-        actTicket && actUserAssistant && voice(actTicket.ref, actUserAssistant?.ref_counter)
+        if (!lastTicket) {
+            return FailedAlert("Nenhuma senha em atendimento")
+        }
+
+        lastTicket  && voice(lastTicket.reference, lastTicket?.counter)
     }
 
     return (
         <div className="w-full h-full grid grid-cols-1 md:grid-cols-[384px_1fr] gap-4 px-4 overflow-x-auto">
             <Sidebar />
             <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="w-full flex flex-col items-center justify-center gap-2 text-brand">
-                    <strong className="text-2xl">{actTicket ? "Senha " + actTicket.ref : "0"}</strong>
+                <div className="w-full flex flex-col items-center justify-center gap-2 text-brand-secondary">
+                    <strong className="text-2xl text-center">{lastTicket ? "Senha " + lastTicket.reference : "0"}</strong>
                     <p className="text-xl">Senha atual</p>
                 </div>
                 <div className="w-full flex flex-col items-center justify-center gap-4">
                     <Button type="button" variant="primary" className="max-w-48 w-full" onClick={handleVoice}>
                         <BellRing /> Chamar novamente
                     </Button>
-                    <Button type="button" variant="primary" className="max-w-48 w-full" onClick={() => handleFinished("4")}>
+                    <Button type="button" variant="primary" className="max-w-48 w-full" onClick={() => handleFinished()}>
+                        <Check /> Finalizar
+                    </Button>
+                    <Button type="button" variant="primary" className="max-w-48 w-full">
                         <CornerUpLeft /> Voltar para fila
                     </Button>
                     <Button type="button" variant="primary" className="max-w-48 w-full">
                         <CornerUpRight /> Transferir
                     </Button>
-                    <Button type="button" variant="primary" className="max-w-48 w-full" onClick={() => handleFinished("6")}>
-                        <Check /> Finalizar
-                    </Button>
-                    <Button type="button" variant="primary" className="max-w-48 w-full" onClick={() => handleFinished("5")}>
+                    <Button type="button" variant="primary" className="max-w-48 w-full">
                         <X /> Não compareceu
                     </Button>
                 </div>

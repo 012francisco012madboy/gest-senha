@@ -1,37 +1,53 @@
-import { Fragment, useContext, useEffect } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../../context/global-context";
 import { Title } from "../../components/title";
-import { Api } from "../../server/api";
+import authApi from "../../server/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Item, ItemActions, ItemContent, ItemTitle } from "@/components/ui/item";
 import { ChevronRight } from "lucide-react";
 import { useAlert } from "@/provider/alert";
 import axios from "axios";
+import { AuthContext } from "@/context/auth-context";
+import { IUser } from "@/interface/IUser";
 
 const Counter = () => {
+    const { user, setUser } = useContext(AuthContext)
     const { getListCounterActive, listCounter } = useContext(GlobalContext)
+    
+    const [disabledButton, setDisabledButton] = useState(false);
 
     const { FailedAlert, SuccessAlert } = useAlert()
 
     const navigate = useNavigate()
 
     useEffect(() => {
-        getListCounterActive()
-    }, [getListCounterActive])
+        if (user && user?.current_counter) {
+            navigate("/employee")
+        }
+        else {
+            getListCounterActive()
+        }
+    }, [user, getListCounterActive])
 
-    async function saveSelectCounter(counter: string) {
-        if (counter == "") {
+    async function saveSelectCounter(counter_id: string) {
+        if (counter_id == "") {
             return FailedAlert("Nenhum balcão selecionado")
         }
-        const id_front_desk = counter
+
+        setDisabledButton(true)
 
         try {
-            const response = await Api.post("user-assistant-add", {
-                id_front_desk
+            const response = await authApi.post("user/open", {
+                counter_id
             })
 
             SuccessAlert(response?.data.message)
+
+            setUser({
+                ...user,
+                current_counter: true
+            } as IUser);
 
             navigate("/employee")
         } catch (e) {
@@ -41,6 +57,9 @@ const Counter = () => {
             else {
                 FailedAlert("Erro inesperado")
             }
+        }
+        finally{
+            setDisabledButton(false)
         }
     }
 
@@ -61,7 +80,7 @@ const Counter = () => {
                                 <Fragment>
                                     {
                                         listCounter?.map((each, i) => (
-                                            <div key={i} onClick={() => saveSelectCounter(each.id)}>
+                                            <div key={i} onClick={() => saveSelectCounter(each.id)} className={`${disabledButton && "pointer-events-none"}`}>
                                                 <Item variant="outline">
                                                     <ItemContent>
                                                         <ItemTitle>Balcão {each.reference}</ItemTitle>

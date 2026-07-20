@@ -13,12 +13,12 @@ interface ContextProps{
 
 function GlobalProvider({children}: ContextProps){
   /* PROVIDER */
-  const { voice, count, getCount } = ExtraProvider()
+  const { count, getCount } = ExtraProvider()
   const { listUser, getListUser } = UserProvider()
   const { listService, getListService, getListActiveService } = ServiceProvider()
-  const { listCounter, getListCounter, getListCounterActive } = CounterProvider()
+  const { counterOpen, listCounter, getCounterOpen, getListCounter, getListCounterActive } = CounterProvider()
   const { listAssociate, getListAssociate } = AssociateProvider()
-  const { listTicket, getListTicket } = TicketProvider()
+  const { voice, lastTicket, listTicket, listCounterTicket, setLastTicket, getNextTicket, getLastTicket, getListTicket, getListCounterTicket } = TicketProvider()
 
   return(
     <GlobalContext.Provider value={{
@@ -37,7 +37,9 @@ function GlobalProvider({children}: ContextProps){
       getListActiveService,
 
       /* BALCÃO */
+      counterOpen,
       listCounter,
+      getCounterOpen,
       getListCounter,
       getListCounterActive,
 
@@ -46,8 +48,14 @@ function GlobalProvider({children}: ContextProps){
       getListAssociate,
 
       /* TICKET */
+      lastTicket,
       listTicket,
+      listCounterTicket,
+      setLastTicket,
+      getNextTicket,
+      getLastTicket,
       getListTicket,
+      getListCounterTicket,
     }}>
       {children}
     </GlobalContext.Provider>

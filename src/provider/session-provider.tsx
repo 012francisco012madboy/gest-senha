@@ -10,31 +10,11 @@ const SessionProvider = () => {
     const { FailedAlert, SuccessAlert } = useAlert()
 
     const [user, setUser] = useState<IUser>()
+    const [logado, setLogado] = useState(false)
     const [loading, setLoading] = useState(true)
 
     const navigate = useNavigate()
-
-    /* USER DATA */
-    const getUser = useCallback(async () => {
-        try {
-            const response = await authApi.get('user')
-            setUser(response.data)
-
-            if (response.data.role == "SU" || response.data.role == "Admin") {
-                return navigate("/admin")
-            }
-
-            return navigate("/counter")
-        } catch {
-            setUser(undefined)
-            return navigate("/sign-in")
-        }
-        finally {
-            setLoading(false)
-        }
-    }, [navigate])
-
-    /* SESSION LOAD */
+    
     useEffect(() => {
         async function loadSession() {
             const token = Cookies.get("gs-token");
@@ -43,8 +23,10 @@ const SessionProvider = () => {
                 try {
                     const response = await authApi.get('user')
                     setUser(response.data)
+                    setLogado(true)
                 } catch {
                     setUser(undefined)
+                    setLogado(false)
                 }
                 finally {
                     setLoading(false)
@@ -52,14 +34,36 @@ const SessionProvider = () => {
             } else {
                 setUser(undefined)
                 setLoading(false)
+                setLogado(false)
             }
 
         }
 
         loadSession()
     }, [])
+    
+    const loadUser = useCallback(async () => {
+        try {
+            const response = await authApi.get('user')
+            setUser(response.data)
 
-    /* SESSION LOGIN */
+            setLogado(true)
+
+            if (response.data.role == "SU" || response.data.role == "Admin") {
+                return navigate("/admin")
+            }
+
+            return navigate("/counter")
+        } catch {
+            setLogado(false)
+            setUser(undefined)
+            return navigate("/sign-in")
+        }
+        finally {
+            setLoading(false)
+        }
+    }, [navigate])
+    
     const login = useCallback(async (email: string, password: string, setDisabledButton: (data: boolean) => void) => {
         setDisabledButton(true)
 
@@ -73,7 +77,7 @@ const SessionProvider = () => {
 
             SuccessAlert(response?.data.message)
 
-            getUser()
+            loadUser()
         }
         catch (e) {
             if (axios.isAxiosError(e)) {
@@ -86,9 +90,8 @@ const SessionProvider = () => {
         finally {
             setDisabledButton(false)
         }
-    }, [getUser, navigate])
-
-    /* SESSION LOGOUT */
+    }, [loadUser, navigate])
+    
     const logout = async () => {
         setUser(undefined)
         setLoading(true)
@@ -108,7 +111,10 @@ const SessionProvider = () => {
     return {
         login,
         logout,
+        loadUser,
+        setUser,
         user,
+        logado,
         loading
     }
 }

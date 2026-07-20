@@ -9,10 +9,6 @@ const ListView = () => {
 
     useEffect(() => {
         getListTicket()
-    }, [getListTicket])
-
-    useEffect(() => {
-        getListTicket()
 
         const channel = ApiEcho.channel(`tickets`)
         

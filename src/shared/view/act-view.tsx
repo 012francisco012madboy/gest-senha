@@ -1,38 +1,33 @@
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../context/auth-context";
+import { useContext, useEffect } from "react";
 import { GlobalContext } from "../../context/global-context";
-import { ITicket } from "../../interface/ITicket";
+import ApiEcho from "@/server/echo";
 
 const ActView = () => {
-    const { actCompany } = useContext(AuthContext)
-    const { getListLastTicket } = useContext(GlobalContext)
-
-    const [ticket, setTicket] = useState<ITicket>()
-
-    // const [acc, setAcc] = useState<boolean>()
+    const { getLastTicket, lastTicket } = useContext(GlobalContext)
 
     useEffect(() => {
-        actCompany && getListLastTicket(actCompany, setTicket)
-    }, [actCompany, getListLastTicket, setTicket])
+        getLastTicket()
 
-    /* useEffect(() => {
-        setInterval(() => {
-            if (acc) return;
-            setAcc(true)
-            actCompany && getListLastTicket(actCompany, setTicket)
-            setAcc(false)
-        }, 10000)
-    }, [actCompany, getListLastTicket, setTicket]) */
+        const channel = ApiEcho.channel(`testes`)
+        
+        channel.listen("TicketCalled", () => {
+            getLastTicket();
+        });
+
+        return () => {
+            ApiEcho.leave("testes");
+        };
+    }, [getLastTicket])
 
     return (
         <div className="w-full min-h-48 h-48 grid grid-cols-2 border-b border-input">
             <div className="w-full flex flex-col items-center justify-center gap-4 text-white bg-brand">
                 <p className="text-2xl">Senha</p>
-                <strong className="text-4xl">{ticket?.ref ?? '?'}</strong>
+                <strong className="text-4xl">{lastTicket?.reference ?? '?'}</strong>
             </div>
             <div className="w-full flex flex-col items-center justify-center gap-4 text-brand">
                 <p className="text-2xl ">Balcão</p>
-                <strong className="text-4xl">{ticket?.counter ?? '?'}</strong>
+                <strong className="text-4xl">{lastTicket?.counter ?? '?'}</strong>
             </div>
         </div>
     );
