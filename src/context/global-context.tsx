@@ -19,7 +19,7 @@ interface GlobalContextData{
   /* SERVIÇOS */
   listService: IService[] | undefined
   getListService: () => void
-  getListActiveService: () => void
+  getListServiceActive: () => void
   
   /* BALCÃO */
   counterOpen: ICounter | undefined

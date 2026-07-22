@@ -15,7 +15,7 @@ function GlobalProvider({children}: ContextProps){
   /* PROVIDER */
   const { count, getCount } = ExtraProvider()
   const { listUser, getListUser } = UserProvider()
-  const { listService, getListService, getListActiveService } = ServiceProvider()
+  const { listService, getListService, getListServiceActive } = ServiceProvider()
   const { counterOpen, listCounter, getCounterOpen, getListCounter, getListCounterActive } = CounterProvider()
   const { listAssociate, getListAssociate } = AssociateProvider()
   const { voice, lastTicket, listTicket, listCounterTicket, setLastTicket, getNextTicket, getLastTicket, getListTicket, getListCounterTicket } = TicketProvider()
@@ -34,7 +34,7 @@ function GlobalProvider({children}: ContextProps){
       /* SERVIÇOS */
       listService,
       getListService,
-      getListActiveService,
+      getListServiceActive,
 
       /* BALCÃO */
       counterOpen,

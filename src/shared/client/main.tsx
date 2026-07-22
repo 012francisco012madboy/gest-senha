@@ -9,9 +9,10 @@ import axios from "axios";
 import { Skeleton } from "../../components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { useAlert } from "@/provider/alert";
+import ApiEcho from "@/server/echo";
 
 const Main = () => {
-    const { getListActiveService, listService } = useContext(GlobalContext)
+    const { getListServiceActive, listService } = useContext(GlobalContext)
 
     const { FailedAlert, SuccessAlert } = useAlert()
 
@@ -20,8 +21,18 @@ const Main = () => {
     const [disabledButton, setDisabledButton] = useState(false)
 
     useEffect(() => {
-        getListActiveService()
-    }, [getListActiveService])
+        getListServiceActive()
+
+        const channel = ApiEcho.channel(`current-service`)
+        
+        channel.listen("current_service", () => {
+            getListServiceActive();
+        });
+
+        return () => {
+            ApiEcho.leave("current-service");
+        };
+    }, [getListServiceActive])
 
     async function handleTicket() {
         if (!service_id) {
@@ -69,7 +80,7 @@ const Main = () => {
                                 <Skeleton className="w-full h-10 rounded-lg" />
                             </Fragment> :
                             listService.length == 0 ?
-                                <p className="text-brand text-center">Nenhum serviço disponível</p> :
+                                <p className="text-red-500 text-center">Nenhum serviço disponível</p> :
                                 <Fragment>
                                     {
                                         listService?.map((each, i) => (

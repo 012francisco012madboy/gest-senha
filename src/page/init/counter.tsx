@@ -76,7 +76,7 @@ const Counter = () => {
                                 <Skeleton className="w-full h-10 rounded-lg" />
                             </Fragment> :
                             listCounter.length == 0 ?
-                                <p className="text-brand text-center">Nenhum balcão disponível</p> :
+                                <p className="text-red-500 text-center">Nenhum balcão disponível</p> :
                                 <Fragment>
                                     {
                                         listCounter?.map((each, i) => (

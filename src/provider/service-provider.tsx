@@ -15,7 +15,7 @@ const ServiceProvider = () => {
         }
     }, [])
 
-    const getListActiveService = useCallback(async () => {
+    const getListServiceActive = useCallback(async () => {
         try {
             const response = await authApi.get("service/active")
             setListService(response?.data)
@@ -28,7 +28,7 @@ const ServiceProvider = () => {
     return {
         listService,
         getListService,
-        getListActiveService
+        getListServiceActive
     }
 }
 

@@ -1,11 +1,17 @@
 import { useCallback, useState } from "react"
 import authApi from "../server/api"
 import { ITicket } from "../interface/ITicket"
+import axios from "axios"
+import { useAlert } from "./alert"
+import Cookies from "js-cookie"
+import { toast } from "sonner"
 
 const TicketProvider = () => {
-    const [ lastTicket, setLastTicket ] = useState<ITicket>()
-    const [ listTicket, setListTicket ] = useState<ITicket[]>()
-    const [ listCounterTicket, setListCounterTicket ] = useState<ITicket[]>()
+    const { FailedAlert, SuccessAlert } = useAlert()
+
+    const [lastTicket, setLastTicket] = useState<ITicket>()
+    const [listTicket, setListTicket] = useState<ITicket[]>()
+    const [listCounterTicket, setListCounterTicket] = useState<ITicket[]>()
 
     function voice(ticket: string, counter: string) {
         if ("speechSynthesis" in window) {
@@ -17,7 +23,7 @@ const TicketProvider = () => {
         }
     }
 
-    const getListTicket = useCallback( async() => {
+    const getListTicket = useCallback(async () => {
         try {
             const response = await authApi.get("ticket")
             setListTicket(response?.data)
@@ -27,7 +33,7 @@ const TicketProvider = () => {
         }
     }, [])
 
-    const getLastTicket = useCallback( async() => {
+    const getLastTicket = useCallback(async () => {
         try {
             const response = await authApi.get("ticket/last")
             setLastTicket(response?.data)
@@ -37,7 +43,7 @@ const TicketProvider = () => {
         }
     }, [])
 
-    const getListCounterTicket = useCallback( async() => {
+    const getListCounterTicket = useCallback(async () => {
         try {
             const response = await authApi.get("ticket/counter")
             setListCounterTicket(response?.data)
@@ -47,14 +53,31 @@ const TicketProvider = () => {
         }
     }, [])
 
-    const getNextTicket = useCallback( async() => {
+    const getNextTicket = useCallback(async () => {
         try {
-            const response = await authApi.get("ticket/next")
-            setLastTicket(response?.data)
-            voice(response?.data?.reference, response?.data?.counter)
+            toast.promise(authApi.get("ticket/next"),
+                {
+                    loading: "Chamando",
+                    success: (res) => {
+                        SuccessAlert("Senha para atendimento: " + res?.data?.reference)
+                        const ticket: ITicket = res?.data;
+
+                        setLastTicket(ticket)
+                        Cookies.set("gs-last-ticket", JSON.stringify(ticket), { expires: 1 });
+
+                        voice(res?.data?.reference, res?.data?.counter)
+                    },
+                    error: (e) => e?.response?.data.message || "Erro inesperado"
+                }
+            )
         }
         catch (e) {
-            setLastTicket(undefined)
+            if (axios.isAxiosError(e)) {
+                FailedAlert(e?.response?.data.message || "Erro inesperado")
+            }
+            else {
+                FailedAlert("Erro inesperado")
+            }
         }
     }, [])
 
@@ -70,5 +93,5 @@ const TicketProvider = () => {
         getListCounterTicket,
     }
 }
- 
+
 export default TicketProvider;
