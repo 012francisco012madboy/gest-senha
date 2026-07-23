@@ -14,7 +14,7 @@ const AdminLayout = ({ children }: layoutProps) => {
                 <AppSidebar />
                 <main className="w-full h-dvh flex flex-col md:gap-4 justify-between overflow-hidden">
                     <Nav />
-                    <div className="w-full h-full p-8 md:rounded-tl-2xl bg-white">
+                    <div className="w-full h-full p-4 md:p-8 md:rounded-tl-2xl bg-white">
                         {children}
                     </div>
                 </main>

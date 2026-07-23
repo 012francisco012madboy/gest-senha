@@ -2,7 +2,7 @@ import { Fragment, useContext, useEffect, useState } from "react";
 import { Title } from "../../components/title";
 import { GlobalContext } from "../../context/global-context";
 import authApi from "../../server/api";
-import { Item, ItemActions, ItemContent, ItemTitle } from "../../components/ui/item";
+import { Item, ItemActions, ItemContent, ItemDescription } from "../../components/ui/item";
 import { ChevronRight } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import axios from "axios";
@@ -10,6 +10,7 @@ import { Skeleton } from "../../components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { useAlert } from "@/provider/alert";
 import ApiEcho from "@/server/echo";
+import { Pattern } from "@/components/pattern";
 
 const Main = () => {
     const { getListServiceActive, listService } = useContext(GlobalContext)
@@ -24,7 +25,7 @@ const Main = () => {
         getListServiceActive()
 
         const channel = ApiEcho.channel(`current-service`)
-        
+
         channel.listen("current_service", () => {
             getListServiceActive();
         });
@@ -63,13 +64,13 @@ const Main = () => {
         }
     }
 
-    function handleSelectService(id: string){
+    function handleSelectService(id: string) {
         setService_id(e => e != id ? id : "")
     }
 
     return (
-        <div className="w-full min-h-dvh flex flex-col items-center justify-center p-4 overflow-y-auto">
-            <div className="max-w-xs w-full flex flex-col items-center justify-center gap-4 sm:gap-8">
+        <Pattern>
+            <div className="max-w-md w-full p-8 pt-12 flex flex-col gap-8 rounded-xl shadow-xl border border-input z-10 bg-white">
                 <Title title="Criar senhas" />
                 <div className="w-full flex flex-col gap-2">
                     {
@@ -87,7 +88,7 @@ const Main = () => {
                                             <div key={i} onClick={() => handleSelectService(each.id)}>
                                                 <Item variant="outline" className={`${service_id == each.id && "bg-gray-100"}`}>
                                                     <ItemContent>
-                                                        <ItemTitle>{each.name}</ItemTitle>
+                                                        <ItemDescription>{each.name}</ItemDescription>
                                                     </ItemContent>
                                                     <ItemActions>
                                                         <ChevronRight className="size-6" />
@@ -103,7 +104,7 @@ const Main = () => {
                     }
                 </div>
             </div>
-        </div>
+        </Pattern>
     );
 }
 

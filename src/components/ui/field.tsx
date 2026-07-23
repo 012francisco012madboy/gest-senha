@@ -113,7 +113,7 @@ function FieldLabel({
     <Label
       data-slot="field-label"
       className={cn(
-        "group/field-label cursor-pointer peer/field-label text-brand flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50",
+        "group/field-label cursor-pointer peer/field-label text-foreground text-base flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50",
         "has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col has-[>[data-slot=field]]:rounded-md has-[>[data-slot=field]]:border border-input *:data-[slot=field]:p-2",
         "has-data-[state=checked]:bg-brand/5 has-data-[state=checked]:border-brand dark:has-data-[state=checked]:bg-brand/10",
         className

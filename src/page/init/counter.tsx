@@ -4,17 +4,18 @@ import { GlobalContext } from "../../context/global-context";
 import { Title } from "../../components/title";
 import authApi from "../../server/api";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Item, ItemActions, ItemContent, ItemTitle } from "@/components/ui/item";
+import { Item, ItemActions, ItemContent, ItemDescription } from "@/components/ui/item";
 import { ChevronRight } from "lucide-react";
 import { useAlert } from "@/provider/alert";
 import axios from "axios";
 import { AuthContext } from "@/context/auth-context";
 import { IUser } from "@/interface/IUser";
+import { Pattern } from "@/components/pattern";
 
 const Counter = () => {
     const { user, setUser } = useContext(AuthContext)
     const { getListCounterActive, listCounter } = useContext(GlobalContext)
-    
+
     const [disabledButton, setDisabledButton] = useState(false);
 
     const { FailedAlert, SuccessAlert } = useAlert()
@@ -58,16 +59,16 @@ const Counter = () => {
                 FailedAlert("Erro inesperado")
             }
         }
-        finally{
+        finally {
             setDisabledButton(false)
         }
     }
 
     return (
-        <div className="w-full min-h-dvh flex flex-col items-center justify-center p-4 overflow-y-auto">
-            <div className="max-w-xs w-full flex flex-col items-center justify-center gap-4 sm:gap-8">
+        <Pattern>
+            <div className="max-w-md w-full p-8 pt-12 flex flex-col gap-8 rounded-xl shadow-xl border border-input z-10 bg-white">
                 <Title title="Balcões de serviços" />
-                <div className="w-full flex flex-col gap-2">
+                <div className="w-full flex flex-col gap-4">
                     {
                         listCounter?.length == undefined ?
                             <Fragment>
@@ -83,7 +84,7 @@ const Counter = () => {
                                             <div key={i} onClick={() => saveSelectCounter(each.id)} className={`${disabledButton && "pointer-events-none"}`}>
                                                 <Item variant="outline">
                                                     <ItemContent>
-                                                        <ItemTitle>Balcão {each.reference}</ItemTitle>
+                                                        <ItemDescription>Balcão {each.reference}</ItemDescription>
                                                     </ItemContent>
                                                     <ItemActions>
                                                         <ChevronRight className="size-6" />
@@ -96,7 +97,7 @@ const Counter = () => {
                     }
                 </div>
             </div>
-        </div>
+        </Pattern>
     );
 }
 

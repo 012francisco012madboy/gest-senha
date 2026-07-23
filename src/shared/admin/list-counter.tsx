@@ -11,11 +11,12 @@ import axios from "axios";
 import AddCounterModal from "@/components/modal/add-counter-modal";
 import EditCounterModal from "@/components/modal/edit-counter-modal";
 import { ICounter } from "@/interface/ICounter";
+import { SubTitle } from "@/components/title";
 
 const ListCounter = () => {
     const { listCounter, getListCounter } = useContext(GlobalContext)
-    const { FailedAlert, SuccessAlert} = useAlert()
-    
+    const { FailedAlert, SuccessAlert } = useAlert()
+
     const [counter, setCounter] = useState<ICounter>()
 
     const [openAddCounter, setOpenAddCounter] = useState(false)
@@ -24,7 +25,7 @@ const ListCounter = () => {
     useEffect(() => {
         getListCounter()
     }, [getListCounter])
-    
+
     function handleEditCounter(each: ICounter) {
         setCounter(each);
 
@@ -34,7 +35,7 @@ const ListCounter = () => {
     async function destroyCounter(id: string) {
         try {
             const response = await authApi.delete(`counter/${id}`)
-            
+
             SuccessAlert(response?.data.message)
 
             getListCounter()
@@ -51,11 +52,11 @@ const ListCounter = () => {
 
     return (
         <Fragment>
-            {openAddCounter && <AddCounterModal open={openAddCounter} setOpen={setOpenAddCounter}/>}
-            {openEditCounter && <EditCounterModal counter={counter} open={openEditCounter} setOpen={setOpenEditCounter}/>}
-            <div className="w-full h-full flex flex-col gap-4 sm:gap-8 overflow-x-auto">
+            {openAddCounter && <AddCounterModal open={openAddCounter} setOpen={setOpenAddCounter} />}
+            {openEditCounter && <EditCounterModal counter={counter} open={openEditCounter} setOpen={setOpenEditCounter} />}
+            <div className="w-full h-full flex flex-col gap-8 overflow-x-auto">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-bold text-xl text-brand-secondary">Balcões</h2>
+                    <SubTitle title="Balcões" />
                     <Button type="button" variant="primary" onClick={() => setOpenAddCounter(true)}>
                         <Plus /> Adicionar
                     </Button>

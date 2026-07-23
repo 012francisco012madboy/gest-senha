@@ -15,13 +15,13 @@ const Nav = () => {
     return (
         <nav className="min-h-16 h-16 flex items-center justify-between px-4 bg-brand">
             <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-white">GEST - SENHAS</h1>
+                <h1 className="text-xl font-bold text-white">UTANGA SENHA</h1>
             </div>
             <div className="h-full flex items-center gap-2 sm:gap-4">
                 {
                     counterOpen &&
                     <Fragment>
-                        <Button type='button' variant="secondary" className='px-4 font-bold'>
+                        <Button size="sm" type='button' variant="secondary" className='px-4 font-bold'>
                             Balcão {counterOpen.reference}
                         </Button>
                         <div className="h-full py-4">

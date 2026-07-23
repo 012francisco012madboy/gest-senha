@@ -11,11 +11,12 @@ import axios from "axios";
 import EditEmployeeModal from "@/components/modal/edit-employee-modal";
 import { IUser } from "@/interface/IUser";
 import { toast } from "sonner";
+import { SubTitle } from "@/components/title";
 
 const ListEmp = () => {
     const { getListUser, listUser } = useContext(GlobalContext)
 
-    const { FailedAlert, SuccessAlert } = useAlert()
+    const { FailedAlert } = useAlert()
 
     const [employee, setEmployee] = useState<Omit<IUser, 'role'>>();
 
@@ -42,8 +43,8 @@ const ListEmp = () => {
                 {
                     loading: "Eliminando",
                     success: (res) => {
-                        SuccessAlert(res?.data.message)
                         getListUser()
+                        return res?.data.message
                     },
                     error: (e) => e?.response?.data.message || "Erro inesperado"
                 }
@@ -79,9 +80,9 @@ const ListEmp = () => {
         <Fragment>
             {openAddEmployee && <AddEmployeeModal open={openAddEmployee} setOpen={setOpenAddEmployee} />}
             {openEditEmployee && <EditEmployeeModal employee={employee} open={openEditEmployee} setOpen={setOpenEditEmployee} />}
-            <div className="w-full h-full flex flex-col gap-4 sm:gap-8 overflow-x-auto">
+            <div className="w-full h-full flex flex-col gap-8 overflow-x-auto">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-bold text-xl text-brand-secondary">Usuários</h2>
+                    <SubTitle title="Usuários"/>
                     <Button type="button" variant="primary" onClick={() => setOpenAddEmployee(true)}>
                         <Plus /> Adicionar
                     </Button>

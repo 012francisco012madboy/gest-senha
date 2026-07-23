@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { GlobalContext } from "../../context/global-context";
-import { Title } from "../../components/title";
+import { SubTitle } from "../../components/title";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import ApiEcho from "@/server/echo";
 
@@ -10,20 +10,22 @@ const Sidebar = () => {
     useEffect(() => {
         getListCounterTicket()
 
-        const channel = ApiEcho.channel(`tickets`)
-        
-        channel.listen("TicketCreated", () => {
+        const channel = ApiEcho.channel("ticket-created")
+
+        channel.listen("ticket_created", () => {
             getListCounterTicket();
         });
 
         return () => {
-            ApiEcho.leave("tickets");
+            ApiEcho.leave("ticket-created");
         };
     }, [getListCounterTicket])
 
     return (
         <div className="w-full h-full hidden md:flex flex-col gap-4 pr-4 border-r border-input overflow-x-auto">
-            <Title title="Senhas em espera" />
+            <div className="w-full text-center">
+                <SubTitle title="Senhas em espera" />
+            </div>
             <Table>
                 <TableHeader>
                     <TableRow>

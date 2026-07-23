@@ -10,11 +10,12 @@ import { useAlert } from "@/provider/alert";
 import axios from "axios";
 import { toast } from "sonner";
 import AddAssociateModal from "@/components/modal/add-associate-modal";
+import { SubTitle } from "@/components/title";
 
 const ListAssociate = () => {
     const { listAssociate, getListAssociate } = useContext(GlobalContext)
 
-    const { FailedAlert, SuccessAlert } = useAlert()
+    const { FailedAlert } = useAlert()
 
     const [openAddAssociate, setOpenAddAssociate] = useState(false)
 
@@ -32,8 +33,8 @@ const ListAssociate = () => {
                 {
                     loading: "Desassociando",
                     success: (res) => {
-                        SuccessAlert(res?.data.message)
                         getListAssociate()
+                        return res?.data.message
                     },
                     error: (e) => e?.response?.data.message || "Erro inesperado"
                 }
@@ -52,9 +53,9 @@ const ListAssociate = () => {
     return (
         <Fragment>
             {openAddAssociate && <AddAssociateModal open={openAddAssociate} setOpen={setOpenAddAssociate} />}
-            <div className="w-full h-full flex flex-col gap-4 sm:gap-8 overflow-x-auto">
+            <div className="w-full h-full flex flex-col gap-8 overflow-x-auto">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-bold text-xl text-brand-secondary">Serviços</h2>
+                    <SubTitle title="Associados"/>
                     <Button type="button" variant="primary" onClick={() => setOpenAddAssociate(true)}>
                         <Plus /> Adicionar
                     </Button>

@@ -14,7 +14,7 @@ import TransfertTicketModal from "@/components/modal/transfert-ticket-modal";
 const Center = () => {
     const { lastTicket, setLastTicket, voice } = useContext(GlobalContext)
 
-    const { FailedAlert, SuccessAlert } = useAlert()
+    const { FailedAlert } = useAlert()
 
     const [openTransfertTicket, setOpenTransfertTicket] = useState(false)
 
@@ -45,9 +45,9 @@ const Center = () => {
                 {
                     loading: "Processando",
                     success: (res) => {
-                        SuccessAlert(res?.data.message)
                         setLastTicket(undefined)
                         Cookies.remove("gs-last-ticket")
+                        return res?.data.message
                     },
                     error: (e) => e?.response?.data.message || "Erro inesperado"
                 }
@@ -73,9 +73,9 @@ const Center = () => {
                 {
                     loading: "Processando",
                     success: (res) => {
-                        SuccessAlert(res?.data.message)
                         setLastTicket(undefined)
                         Cookies.remove("gs-last-ticket")
+                        return res?.data.message
                     },
                     error: (e) => e?.response?.data.message || "Erro inesperado"
                 }
@@ -109,9 +109,9 @@ const Center = () => {
                 {
                     loading: "Processando",
                     success: (res) => {
-                        SuccessAlert(res?.data.message)
                         setLastTicket(undefined)
                         Cookies.remove("gs-last-ticket")
+                        return res?.data.message
                     },
                     error: (e) => e?.response?.data.message || "Erro inesperado"
                 }

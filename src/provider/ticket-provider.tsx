@@ -7,7 +7,7 @@ import Cookies from "js-cookie"
 import { toast } from "sonner"
 
 const TicketProvider = () => {
-    const { FailedAlert, SuccessAlert } = useAlert()
+    const { FailedAlert } = useAlert()
 
     const [lastTicket, setLastTicket] = useState<ITicket>()
     const [listTicket, setListTicket] = useState<ITicket[]>()
@@ -59,13 +59,13 @@ const TicketProvider = () => {
                 {
                     loading: "Chamando",
                     success: (res) => {
-                        SuccessAlert("Senha para atendimento: " + res?.data?.reference)
                         const ticket: ITicket = res?.data;
-
+                        
                         setLastTicket(ticket)
                         Cookies.set("gs-last-ticket", JSON.stringify(ticket), { expires: 1 });
-
+                        
                         voice(res?.data?.reference, res?.data?.counter)
+                        return ("Senha para atendimento: " + res?.data?.reference)
                     },
                     error: (e) => e?.response?.data.message || "Erro inesperado"
                 }

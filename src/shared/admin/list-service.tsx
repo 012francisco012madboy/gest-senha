@@ -12,11 +12,12 @@ import { toast } from "sonner";
 import AddServiceModal from "@/components/modal/add-service-modal";
 import EditServiceModal from "@/components/modal/edit-service-modal";
 import { IService } from "@/interface/IService";
+import { SubTitle } from "@/components/title";
 
 const ListService = () => {
     const { listService, getListService } = useContext(GlobalContext)
 
-    const { FailedAlert, SuccessAlert } = useAlert()
+    const { FailedAlert } = useAlert()
 
     const [service, setService] = useState<IService>()
 
@@ -43,8 +44,8 @@ const ListService = () => {
                 {
                     loading: "Eliminando",
                     success: (res) => {
-                        SuccessAlert(res?.data.message)
                         getListService()
+                        return res?.data.message
                     },
                     error: (e) => e?.response?.data.message || "Erro inesperado"
                 }
@@ -64,9 +65,9 @@ const ListService = () => {
         <Fragment>
             {openAddService && <AddServiceModal open={openAddService} setOpen={setOpenAddService} />}
             {openEditService && <EditServiceModal service={service} open={openEditService} setOpen={setOpenEditService} />}
-            <div className="w-full h-full flex flex-col gap-4 sm:gap-8 overflow-x-auto">
+            <div className="w-full h-full flex flex-col gap-8 overflow-x-auto">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-bold text-xl text-brand-secondary">Serviços</h2>
+                    <SubTitle title="Serviços"/>
                     <Button type="button" variant="primary" onClick={() => setOpenAddService(true)}>
                         <Plus /> Adicionar
                     </Button>

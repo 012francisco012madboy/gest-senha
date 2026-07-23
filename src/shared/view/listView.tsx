@@ -10,19 +10,19 @@ const ListView = () => {
     useEffect(() => {
         getListTicket()
 
-        const channel = ApiEcho.channel(`tickets`)
+        const channel = ApiEcho.channel("ticket-created")
         
-        channel.listen("TicketCreated", () => {
+        channel.listen("ticket_created", () => {
             getListTicket();
         });
 
         return () => {
-            ApiEcho.leave("tickets");
+            ApiEcho.leave("ticket-created");
         };
     }, [getListTicket])
 
     return (
-        <div className="w-full h-full flex flex-col gap-4 px-4 overflow-x-auto">
+        <div className="w-full h-full flex flex-col gap-8 px-4 overflow-x-auto">
             <Title title="Senhas em espera" />
             <Table>
                 <TableHeader>

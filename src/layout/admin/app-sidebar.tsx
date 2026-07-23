@@ -13,7 +13,7 @@ export function AppSidebar() {
     return (
         <Sidebar>
             <SidebarHeader className="w-64 h-16 flex flex-row items-center justify-between bg-brand">
-                <h1 className="text-xl font-bold text-white">GEST - SENHAS</h1>
+                <h1 className="text-xl font-bold text-white">UTANGA SENHA</h1>
             </SidebarHeader>
             <div className="w-full px-4">
                 <Separator />
@@ -65,7 +65,7 @@ export function AppSidebar() {
             <SidebarFooter>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <Button variant="destructive" className="w-full justify-start px-4" onClick={logout}>
+                        <Button variant="destructive" className="text-base w-full justify-start px-4" onClick={logout}>
                             Sair
                         </Button>
                     </SidebarMenuItem>
